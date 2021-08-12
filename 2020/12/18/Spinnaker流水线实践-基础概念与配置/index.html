@@ -1,0 +1,323 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>5.Spinnaker流水线实践-基础概念与配置 | Lustudio</title><meta name="keywords" content="Spinnaker"><meta name="author" content="Lustudio"><meta name="copyright" content="Lustudio"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="1.流水线基础感念应用部署1.使用Spinnaker的应用程序部署功能来构建和管理连续交付工作流程。由一系列阶段组成。可配置根据事件自动触发。管道消息通知。   2.Stage：描述了一个较高级别的动作的管道将执行线性或并行顺序任务和由阶段的集合。  创建流水线 2.流水线配置1.执行选项Execution Options  并行触发管道（同时仅允许允许一次） 自动取消在队列中等待的管道 禁用了并">
+<meta property="og:type" content="article">
+<meta property="og:title" content="5.Spinnaker流水线实践-基础概念与配置">
+<meta property="og:url" content="http://example.com/2020/12/18/Spinnaker%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%AE%9E%E8%B7%B5-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E4%B8%8E%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:site_name" content="Lustudio">
+<meta property="og:description" content="1.流水线基础感念应用部署1.使用Spinnaker的应用程序部署功能来构建和管理连续交付工作流程。由一系列阶段组成。可配置根据事件自动触发。管道消息通知。   2.Stage：描述了一个较高级别的动作的管道将执行线性或并行顺序任务和由阶段的集合。  创建流水线 2.流水线配置1.执行选项Execution Options  并行触发管道（同时仅允许允许一次） 自动取消在队列中等待的管道 禁用了并">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2020-12-18T09:55:21.000Z">
+<meta property="article:modified_time" content="2021-04-16T05:58:01.000Z">
+<meta property="article:author" content="Lustudio">
+<meta property="article:tag" content="Spinnaker">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2020/12/18/Spinnaker%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%AE%9E%E8%B7%B5-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E4%B8%8E%E9%85%8D%E7%BD%AE/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":300},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'mediumZoom',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '5.Spinnaker流水线实践-基础概念与配置',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-04-16 13:58:01'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const fontSizeVal = saveToLocal.get('global-font-size')
+    if (fontSizeVal !== undefined) {
+      document.documentElement.style.setProperty('--global-font-size', fontSizeVal + 'px')
+    }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQae-91xlO6GYrOzk-6P_ZgTFMVDGq7tliWjw&amp;usqp=CAU" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">69</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">18</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">18</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Lustudio</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">5.Spinnaker流水线实践-基础概念与配置</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-12-18T09:55:21.000Z" title="发表于 2020-12-18 17:55:21">2020-12-18</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-04-16T05:58:01.000Z" title="更新于 2021-04-16 13:58:01">2021-04-16</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Spinnaker/">Spinnaker</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="5.Spinnaker流水线实践-基础概念与配置"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="1-流水线基础感念"><a href="#1-流水线基础感念" class="headerlink" title="1.流水线基础感念"></a>1.流水线基础感念</h2><h4 id="应用部署"><a href="#应用部署" class="headerlink" title="应用部署"></a>应用部署</h4><p>1.使用Spinnaker的应用程序部署功能来构建和管理连续交付工作流程。由一系列阶段组成。可配置根据事件自动触发。管道消息通知。</p>
+<img src="https://i.loli.net/2020/12/16/7fydt1veKmkFMQJ.png" alt="微信截图_20201216155605.png" style="zoom:150%;">
+
+<p>2.Stage：描述了一个较高级别的动作的管道将执行线性或并行顺序任务和由阶段的集合。</p>
+<p><img src="https://i.loli.net/2020/12/16/pPxvA8ZysmtG52g.png" alt="微信截图_20201216155722.png"></p>
+<p>创建流水线</p>
+<h2 id="2-流水线配置"><a href="#2-流水线配置" class="headerlink" title="2.流水线配置"></a>2.流水线配置</h2><p>1.执行选项Execution Options</p>
+<ul>
+<li>并行触发管道（同时仅允许允许一次）</li>
+<li>自动取消在队列中等待的管道</li>
+<li>禁用了并发管道执行，那么在下一个执行开始时，等待队列中的管道将被取消。<ul>
+<li>要将它们保留在队列中，请选中此框。</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/16/GFg9RExIYnPC4eH.png" alt="微信截图_20201216160652.png"></p>
+<p>2.参数化构建</p>
+<ul>
+<li>Parameter ：可选，如果选中，则此参数将始终显示在管道执行视图中，否则默认情况下将被折叠。</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/16/dHeqLWzmfxgM4rY.png" alt="微信截图_20201216161424.png"></p>
+<h2 id="3-消息通知"><a href="#3-消息通知" class="headerlink" title="3. 消息通知"></a>3. 消息通知</h2><p>选择邮件通知</p>
+<p><img src="https://i.loli.net/2020/12/16/2B397QpvmtHSjxO.png" alt="微信截图_20201216163437.png"></p>
+<p>编辑配置文件</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">/home/spinnaker/.hal/default/profiles</span><br><span class="line">bash-5.0$ cat settings-local.js </span><br><span class="line">window.spinnakerSettings.feature.managerdServicdAccounts = true;</span><br><span class="line">window.spinnakerSettings.notifications.email.enabled = true;</span><br><span class="line"></span><br><span class="line">bash-5.0$ vi /home/spinnaker/.hal/default/profiles/echo-local.yml </span><br><span class="line">mail:</span><br><span class="line">  enabled: true</span><br><span class="line">  from: 17521383564@163.com</span><br><span class="line">spring:</span><br><span class="line">  mail:</span><br><span class="line">    host: smtp.163.com</span><br><span class="line">    username: 17521383564@163.com</span><br><span class="line">    password: ....</span><br><span class="line">    protocol: smtp</span><br><span class="line">    default-encoding: utf-8</span><br><span class="line">    properties:</span><br><span class="line">      mail:</span><br><span class="line">        display:</span><br><span class="line">          sendname: SpinnakerAdmin</span><br><span class="line">        smtp:</span><br><span class="line">          port: 465</span><br><span class="line">          auth: true</span><br><span class="line">          starttls:</span><br><span class="line">            enable: true</span><br><span class="line">            required: true</span><br><span class="line">          ssl:</span><br><span class="line">            enable: true</span><br><span class="line">        transport:</span><br><span class="line">          protocol: smtp</span><br><span class="line">        debug: true</span><br><span class="line">hal  deploy apply </span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="4-自动触发器-Automated-Triggers"><a href="#4-自动触发器-Automated-Triggers" class="headerlink" title="4.自动触发器 Automated Triggers"></a>4.自动触发器 Automated Triggers</h2><ul>
+<li>权限： 当使用自动触发器触发管道时，确定角色是否具有访问受保护的应用程序或账户的权限</li>
+<li>要从受保护的应用程序或帐户读取，管道必须至少具有一个对应用程序或帐户具有读取访问权限的角色。</li>
+<li>要写入受保护的应用程序或帐户，管道必须至少具有一个对应用程序或帐户具有写访问权的角色。</li>
+</ul>
+<p>[^注意：为防止特权提升漏洞，用户必须是此处指定的所有组的成员，才能进行修改和执行管道。]: </p>
+<p><img src="https://i.loli.net/2020/12/16/RjerDkEN7aC9T51.png" alt="微信截图_20201216162012.png"></p>
+<p>类型：Artifactory、Concourse、Cron、Git、Jenkins、Nexus、Pipeline、Plugin、TravisCI、WebHook、Wercker、Docker Registry。</p>
+<p><img src="https://i.loli.net/2020/12/17/loN5vAKCJXkxPtL.png" alt="微信截图1216180528.png"></p>
+<h3 id="流水线配置Jenkins触发器"><a href="#流水线配置Jenkins触发器" class="headerlink" title="流水线配置Jenkins触发器"></a>流水线配置Jenkins触发器</h3><p>集成jenkins</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">hal config ci jenkins&nbsp;enable</span><br><span class="line">&nbsp;</span><br><span class="line">## 配置Jenkins，需要用到账号和密码</span><br><span class="line">hal config  ci jenkins    master  add  my-jenkins-master-01  --address  http://192.168.0.74:8080  --username admin  --password  admin</span><br><span class="line">&nbsp;</span><br><span class="line">## 启用csrf</span><br><span class="line">hal  config  ci jenkins  master  edit my-jenkins-master-01  --csrf  true</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Jenkins设置CSRF</p>
+<ul>
+<li>在Jenkins中安装Strict Crumb Issuer插件</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/17/HLalqkR3JCbxOW2.png" alt="微信截图_20201217092139.png"></p>
+<p>设置Jenkins触发器</p>
+<ul>
+<li>选择Jenkins节点和作业名称</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/17/Up5xqjCY92EG3PZ.png" alt="微信截图_20201217095221.png"><br>当JenkinsCI流水线完成后自动触发Spinnaker流水线。</p>
+<h3 id="流水线配置WebHooK触发器"><a href="#流水线配置WebHooK触发器" class="headerlink" title="流水线配置WebHooK触发器"></a>流水线配置WebHooK触发器</h3><ul>
+<li>设置WebHooK触发器<ul>
+<li>添加触发器URL和K/V</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/17/tMkFe4UXQ2BIE5f.png" alt="微信截图_20201217095940.png"></p>
+<ul>
+<li>设置WebHook触发器<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">curl http://spin-gate.devops.com/webhooks/webhook/myapps \</span><br><span class="line">     -X POST \</span><br><span class="line">     -H "content-type: application/json" \</span><br><span class="line">     -d ‘{"token":"myapps" }’</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure></li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/17/524GzSuvCgaDeIN.png" alt="微信截图_20201217100122.png"></p>
+<ul>
+<li>设置WebHook触发器-参数化触发<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">curl http://spin-gate.devops.com/webhooks/webhook/myapps \</span><br><span class="line">-X POST \</span><br><span class="line">-H "content-type: application/json" \</span><br><span class="line">-d '{"token":"myapps", </span><br><span class="line">     "parameters": {</span><br><span class="line">          "ENV": "prod"</span><br><span class="line">       } </span><br><span class="line">    }'</span><br></pre></td></tr></tbody></table></figure></li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/17/hjVIa3EX4PimrN9.png" alt="微信截图_20201217100304.png"></p>
+<h3 id="流水线配置GitLab触发器"><a href="#流水线配置GitLab触发器" class="headerlink" title="流水线配置GitLab触发器"></a>流水线配置GitLab触发器</h3><ul>
+<li>配置GitHub WebHooK<ul>
+<li><a target="_blank" rel="noopener" href="http://spin-gate.devops.com/webhooks/git/gitlab">http://spin-gate.devops.com/webhooks/git/gitlab</a>    </li>
+</ul>
+</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/17/iMxu4TwVh9AGqSB.png" alt="微信截图_20201217104700.png"></p>
+<ul>
+<li>配置Spinnaker开启gitlab制品支持<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">### https://spinnaker.io/setup/artifacts/gitlab/</span><br><span class="line">hal config artifact gitlab enable</span><br><span class="line">hal config artifact gitlab account add my-gitlab-account \</span><br><span class="line">    --token qqHX8T4VTY4G5UpozbnX</span><br><span class="line"></span><br><span class="line">hal deploy apply</span><br></pre></td></tr></tbody></table></figure></li>
+<li>配置gitlab触发器</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/17/h9ZI6TCwVUxYGDj.png" alt="微信截图_20201217105008.png"></p>
+<h3 id="流水线配置Harbor触发器"><a href="#流水线配置Harbor触发器" class="headerlink" title="流水线配置Harbor触发器"></a>流水线配置Harbor触发器</h3><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">hal config provider docker-registry account add my-harbor-registry \</span><br><span class="line">    --address http://192.168.1.200:8088 \</span><br><span class="line">    --username admin \</span><br><span class="line">    --password Harbor12345</span><br><span class="line"></span><br><span class="line">hal config provider kubernetes account edit default \</span><br><span class="line">    --docker-registries my-harbor-registry \</span><br><span class="line"></span><br><span class="line">## 扩展命令-给指定的角色授权</span><br><span class="line">hal config provider docker-registry account edit my-harbor-registry \</span><br><span class="line">    --read-permissions yunweizu \</span><br><span class="line">    --write-permissions yunweizu</span><br><span class="line"></span><br><span class="line">hal deploy apply</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>配置docker 仓库触发器</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/17/LroZRUGV3YQJI2l.png" alt="微信截图_20201217105246.png"></p>
+<h2 id="5-流水线中常用阶段"><a href="#5-流水线中常用阶段" class="headerlink" title="5. 流水线中常用阶段"></a>5. 流水线中常用阶段</h2><ul>
+<li>阶段组成<ul>
+<li>阶段运行选项</li>
+<li>阶段类型</li>
+<li>阶段通知</li>
+<li>阶段描述</li>
+<li>阶段制品</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/17/wFtlAdeGxb14XCQ.png" alt="微信截图_20201217135915.png"></p>
+<h3 id="阶段运行选项"><a href="#阶段运行选项" class="headerlink" title="阶段运行选项"></a>阶段运行选项</h3><h4 id="阶段运行选项-阶段失败后执行操作"><a href="#阶段运行选项-阶段失败后执行操作" class="headerlink" title="阶段运行选项-阶段失败后执行操作"></a>阶段运行选项-阶段失败后执行操作</h4><ul>
+<li>停止整个管道</li>
+<li>停止依赖目当前阶段的所有阶段，允许其他的阶段运行。</li>
+<li>停止依赖当前阶段的所有阶段，其他阶段完成后标记失败。</li>
+<li>忽略失败</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/17/ZzgS7qoUVQlXifN.png" alt="微信截图_20201217140328.png"></p>
+<h4 id="阶段运行选项-将执行限制为特定的时间窗口"><a href="#阶段运行选项-将执行限制为特定的时间窗口" class="headerlink" title="阶段运行选项-将执行限制为特定的时间窗口"></a>阶段运行选项-将执行限制为特定的时间窗口</h4><p><img src="https://i.loli.net/2020/12/17/J8LnYjCxeMWFlO2.png" alt="微信截图_20201217140909.png"></p>
+<h4 id="阶段运行选项-其他"><a href="#阶段运行选项-其他" class="headerlink" title="阶段运行选项-其他"></a>阶段运行选项-其他</h4><p><img src="https://i.loli.net/2020/12/17/XMb7xzi8oOcwIHn.png" alt="微信截图_20201217141139.png"></p>
+<h3 id="常用的阶段类型"><a href="#常用的阶段类型" class="headerlink" title="常用的阶段类型"></a>常用的阶段类型</h3><h4 id="AWS-CodeBuild"><a href="#AWS-CodeBuild" class="headerlink" title="AWS CodeBuild"></a>AWS CodeBuild</h4><ul>
+<li>通过指定项目名称来运行AWS CodeBuild构建。构建使用的源和映像可以来自上游阶段。生成的工件可以注入到管道中，并由下游阶段使用。</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/17/MYkqQxRDwoA6LK2.png" alt="微信截图_20201217141351.png"></p>
+<h4 id="Jenkins-触发Jenkins作业"><a href="#Jenkins-触发Jenkins作业" class="headerlink" title="Jenkins 触发Jenkins作业"></a>Jenkins 触发Jenkins作业</h4><p><img src="https://i.loli.net/2020/12/17/PJwLZeXfCukOE1l.png" alt="微信截图_20201217141440.png"></p>
+<h4 id="Pipline-运行spinnaker流水线"><a href="#Pipline-运行spinnaker流水线" class="headerlink" title="Pipline 运行spinnaker流水线"></a>Pipline 运行spinnaker流水线</h4><p><img src="https://i.loli.net/2020/12/17/wlhYTDnH49WAput.png" alt="微信截图_20201217141532.png"></p>
+<h4 id="Wait-等待时间"><a href="#Wait-等待时间" class="headerlink" title="Wait 等待时间"></a>Wait 等待时间</h4><p><img src="https://i.loli.net/2020/12/17/cDPqE1IJbBYZn7M.png" alt="微信截图_20201217141648.png"></p>
+<h4 id="WebHooK-发送WebHook请求"><a href="#WebHooK-发送WebHook请求" class="headerlink" title="WebHooK  发送WebHook请求"></a>WebHooK  发送WebHook请求</h4><p><img src="https://i.loli.net/2020/12/17/hIz6Pl4371ZnRTD.png" alt="微信截图_20201217141821.png"></p>
+<h4 id="ManualJudgment-手动判断"><a href="#ManualJudgment-手动判断" class="headerlink" title="ManualJudgment  手动判断"></a>ManualJudgment  手动判断</h4><ul>
+<li>Instructions: 在进行手动判断时会向用户显示说明。可以包含HTML。</li>
+<li>Propagate Authentication: 传递身份认证权限，选中后管道具有批准者的权限。</li>
+<li>Judgment Inputs: 供用户输入的选项。</li>
+<li>Send Notifications: 发送消息通知，等待判断、判断为继续、判断为停止。<img src="https://i.loli.net/2020/12/17/wdAsvnoPi7RXUkN.png" alt="微信截图_20201217141917.png" style="zoom:150%;"></li>
+</ul>
+<h4 id="Check-Preconditions-检查前置条件"><a href="#Check-Preconditions-检查前置条件" class="headerlink" title="Check Preconditions  检查前置条件"></a>Check Preconditions  检查前置条件</h4><ul>
+<li>在继续操作之前，请检查前提条件。例如集群是否为特定大小、管道表达式、阶段状态。<br><img src="https://i.loli.net/2020/12/17/7yuA8rhEXneFCjR.png" alt="微信截图_20201217142052.png"></li>
+</ul>
+<h4 id="Bake-Manifest"><a href="#Bake-Manifest" class="headerlink" title="Bake(Manifest)"></a>Bake(Manifest)</h4><ul>
+<li>使用诸如Helm之类的模板渲染器生成清单文件（或多文档清单集）<br><img src="https://i.loli.net/2020/12/17/Kj1pZ3SOoqYmb8N.png" alt="微信截图_20201217142150.png"></li>
+</ul>
+<h4 id="Delete-Deploy-Disable-Enable（Manifest）"><a href="#Delete-Deploy-Disable-Enable（Manifest）" class="headerlink" title="Delete/Deploy/Disable/Enable（Manifest）"></a>Delete/Deploy/Disable/Enable（Manifest）</h4><ul>
+<li>资源文件可以从版本控制系统中获取。<br><img src="https://i.loli.net/2020/12/17/8izfRd2CZjMuIKw.png" alt="微信截图_20201217142246.png"><h2 id="6-Spinnaker应用部署"><a href="#6-Spinnaker应用部署" class="headerlink" title="6. Spinnaker应用部署"></a>6. Spinnaker应用部署</h2></li>
+</ul>
+<h3 id="创建一个应用和项目"><a href="#创建一个应用和项目" class="headerlink" title="创建一个应用和项目"></a>创建一个应用和项目</h3><p><img src="https://i.loli.net/2020/12/17/bw6QdpTylILB9n5.png" alt="微信截图_20201217151639.png"></p>
+<h3 id="创建流水线并添加Deploy阶段"><a href="#创建流水线并添加Deploy阶段" class="headerlink" title="创建流水线并添加Deploy阶段"></a>创建流水线并添加Deploy阶段</h3><ul>
+<li>Text部分为资源清单 nginxdemo.yaml<br><img src="https://i.loli.net/2020/12/17/GVxw6eFBzU3n7sK.png" alt="微信截图_20201217151810.png"></li>
+</ul>
+<h3 id="创建流水线并添加Deploy阶段-1"><a href="#创建流水线并添加Deploy阶段-1" class="headerlink" title="创建流水线并添加Deploy阶段"></a>创建流水线并添加Deploy阶段</h3><ul>
+<li>从gitlab获取资源清单<br><img src="https://i.loli.net/2020/12/17/9l6XgiCszHOn1jo.png" alt="微信截图_20201217151916.png"></li>
+</ul>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">http://gitlab.idevops.site/api/v4/projects/spinnaker%2fspinnaker-nginx-demo/repository/files/dev.yaml/raw</span><br><span class="line"></span><br><span class="line">参考链接： https://spinnaker.io/reference/artifacts/types/gitlab-file/</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="运行流水线进行部署"><a href="#运行流水线进行部署" class="headerlink" title="运行流水线进行部署"></a>运行流水线进行部署</h3><p>流水线综合实践</p>
+<ul>
+<li>Gitlab + Jenkins + Harbor + Spinnaker</li>
+<li>准备工作<ul>
+<li>Jenkins 作业命名： spinnaker-nginx-demo </li>
+<li>Harbor仓库命名： spinnaker/spinnaker-nginx-demo:[tag]</li>
+<li>spinnaker项目/应用： spinnaker   nginxdemo</li>
+</ul>
+</li>
+</ul>
+<p>spinnaker-nginx-demo 测试项目代码地址：<a target="_blank" rel="noopener" href="https://github.com/spinnakerusers/spinnaker-nginx-demo.git">https://github.com/spinnakerusers/spinnaker-nginx-demo.git</a></p>
+<h2 id="7-CICD部分实现"><a href="#7-CICD部分实现" class="headerlink" title="7. CICD部分实现"></a>7. CICD部分实现</h2><p><img src="https://i.loli.net/2020/12/17/Bsa1iq7lFIN2SD3.png" alt="微信截图_20201217152335.png"></p>
+<ul>
+<li>开发人员向Gitlab提交代码，触发JenkinsCI构建。</li>
+<li>Jenkins构建该分支，生成docker镜像，上传到Harbor镜像仓库。</li>
+<li>Spinnaker检测到JenkinsCI构建完成后运行CD部署流水线。</li>
+</ul>
+<h4 id="准备代码库"><a href="#准备代码库" class="headerlink" title="准备代码库"></a>准备代码库</h4><p>spinnaker-nginx-demo 测试项目代码地址：<a target="_blank" rel="noopener" href="https://github.com/spinnakerusers/spinnaker-nginx-demo.git">https://github.com/spinnakerusers/spinnaker-nginx-demo.git</a></p>
+<h4 id="Jenkins"><a href="#Jenkins" class="headerlink" title="Jenkins"></a>Jenkins</h4><p>spinnaker-nginx-demo 测试项目代码地址：<a target="_blank" rel="noopener" href="https://github.com/spinnakerusers/spinnaker-nginx-demo.git">https://github.com/spinnakerusers/spinnaker-nginx-demo.git</a></p>
+<h4 id="Gitlab"><a href="#Gitlab" class="headerlink" title="Gitlab"></a>Gitlab</h4><p><a target="_blank" rel="noopener" href="http://jenkins.devops.com/generic-webhook-trigger/invoke?token=spinnaker-nginx-demo">http://jenkins.devops.com/generic-webhook-trigger/invoke?token=spinnaker-nginx-demo</a></p>
+<p><img src="https://i.loli.net/2020/12/17/6E7xZNuDUWvFfpH.png" alt="微信截图_20201217153211.png"></p>
+<h4 id="Spinnaker"><a href="#Spinnaker" class="headerlink" title="Spinnaker"></a>Spinnaker</h4><p><img src="https://i.loli.net/2020/12/17/nYctZPEN67Sy84X.png" alt="微信截图_20201217153308.png"></p>
+<h4 id="传达镜像参数"><a href="#传达镜像参数" class="headerlink" title="传达镜像参数"></a>传达镜像参数</h4><p><img src="https://i.loli.net/2020/12/17/FgOQEt1jJmuiGY4.png" alt="微信截图_20201217153427.png"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Lustudio</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2020/12/18/Spinnaker%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%AE%9E%E8%B7%B5-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E4%B8%8E%E9%85%8D%E7%BD%AE/">http://example.com/2020/12/18/Spinnaker%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%AE%9E%E8%B7%B5-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E4%B8%8E%E9%85%8D%E7%BD%AE/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">Lustudio</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Spinnaker/">Spinnaker</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/12/18/Kubernetes%E6%B5%81%E6%B0%B4%E7%BA%BF%E9%83%A8%E7%BD%B2%E5%AE%9E%E8%B7%B5/"><img class="prev-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">6.Kubernetes流水线部署实践</div></div></a></div><div class="next-post pull-right"><a href="/2020/12/18/Spinnaker%E6%8E%88%E6%9D%83%E7%AE%A1%E7%90%86/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">4.Spinnaker授权管理</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2020/12/18/Kubernetes流水线部署实践/" title="6.Kubernetes流水线部署实践"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-18</div><div class="title">6.Kubernetes流水线部署实践</div></div></a></div><div><a href="/2020/12/18/Spinnaker授权管理/" title="4.Spinnaker授权管理"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-18</div><div class="title">4.Spinnaker授权管理</div></div></a></div><div><a href="/2020/12/18/Spinnaker用户认证管理/" title="3.Spinnaker用户认证管理"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-18</div><div class="title">3.Spinnaker用户认证管理</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%9F%BA%E7%A1%80%E6%84%9F%E5%BF%B5"><span class="toc-number">1.</span> <span class="toc-text">1.流水线基础感念</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E9%83%A8%E7%BD%B2"><span class="toc-number">1.0.1.</span> <span class="toc-text">应用部署</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%B5%81%E6%B0%B4%E7%BA%BF%E9%85%8D%E7%BD%AE"><span class="toc-number">2.</span> <span class="toc-text">2.流水线配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E6%B6%88%E6%81%AF%E9%80%9A%E7%9F%A5"><span class="toc-number">3.</span> <span class="toc-text">3. 消息通知</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E8%87%AA%E5%8A%A8%E8%A7%A6%E5%8F%91%E5%99%A8-Automated-Triggers"><span class="toc-number">4.</span> <span class="toc-text">4.自动触发器 Automated Triggers</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%81%E6%B0%B4%E7%BA%BF%E9%85%8D%E7%BD%AEJenkins%E8%A7%A6%E5%8F%91%E5%99%A8"><span class="toc-number">4.1.</span> <span class="toc-text">流水线配置Jenkins触发器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%81%E6%B0%B4%E7%BA%BF%E9%85%8D%E7%BD%AEWebHooK%E8%A7%A6%E5%8F%91%E5%99%A8"><span class="toc-number">4.2.</span> <span class="toc-text">流水线配置WebHooK触发器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%81%E6%B0%B4%E7%BA%BF%E9%85%8D%E7%BD%AEGitLab%E8%A7%A6%E5%8F%91%E5%99%A8"><span class="toc-number">4.3.</span> <span class="toc-text">流水线配置GitLab触发器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%81%E6%B0%B4%E7%BA%BF%E9%85%8D%E7%BD%AEHarbor%E8%A7%A6%E5%8F%91%E5%99%A8"><span class="toc-number">4.4.</span> <span class="toc-text">流水线配置Harbor触发器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E6%B5%81%E6%B0%B4%E7%BA%BF%E4%B8%AD%E5%B8%B8%E7%94%A8%E9%98%B6%E6%AE%B5"><span class="toc-number">5.</span> <span class="toc-text">5. 流水线中常用阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%98%B6%E6%AE%B5%E8%BF%90%E8%A1%8C%E9%80%89%E9%A1%B9"><span class="toc-number">5.1.</span> <span class="toc-text">阶段运行选项</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%98%B6%E6%AE%B5%E8%BF%90%E8%A1%8C%E9%80%89%E9%A1%B9-%E9%98%B6%E6%AE%B5%E5%A4%B1%E8%B4%A5%E5%90%8E%E6%89%A7%E8%A1%8C%E6%93%8D%E4%BD%9C"><span class="toc-number">5.1.1.</span> <span class="toc-text">阶段运行选项-阶段失败后执行操作</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%98%B6%E6%AE%B5%E8%BF%90%E8%A1%8C%E9%80%89%E9%A1%B9-%E5%B0%86%E6%89%A7%E8%A1%8C%E9%99%90%E5%88%B6%E4%B8%BA%E7%89%B9%E5%AE%9A%E7%9A%84%E6%97%B6%E9%97%B4%E7%AA%97%E5%8F%A3"><span class="toc-number">5.1.2.</span> <span class="toc-text">阶段运行选项-将执行限制为特定的时间窗口</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%98%B6%E6%AE%B5%E8%BF%90%E8%A1%8C%E9%80%89%E9%A1%B9-%E5%85%B6%E4%BB%96"><span class="toc-number">5.1.3.</span> <span class="toc-text">阶段运行选项-其他</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E7%9A%84%E9%98%B6%E6%AE%B5%E7%B1%BB%E5%9E%8B"><span class="toc-number">5.2.</span> <span class="toc-text">常用的阶段类型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#AWS-CodeBuild"><span class="toc-number">5.2.1.</span> <span class="toc-text">AWS CodeBuild</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Jenkins-%E8%A7%A6%E5%8F%91Jenkins%E4%BD%9C%E4%B8%9A"><span class="toc-number">5.2.2.</span> <span class="toc-text">Jenkins 触发Jenkins作业</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Pipline-%E8%BF%90%E8%A1%8Cspinnaker%E6%B5%81%E6%B0%B4%E7%BA%BF"><span class="toc-number">5.2.3.</span> <span class="toc-text">Pipline 运行spinnaker流水线</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Wait-%E7%AD%89%E5%BE%85%E6%97%B6%E9%97%B4"><span class="toc-number">5.2.4.</span> <span class="toc-text">Wait 等待时间</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#WebHooK-%E5%8F%91%E9%80%81WebHook%E8%AF%B7%E6%B1%82"><span class="toc-number">5.2.5.</span> <span class="toc-text">WebHooK  发送WebHook请求</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ManualJudgment-%E6%89%8B%E5%8A%A8%E5%88%A4%E6%96%AD"><span class="toc-number">5.2.6.</span> <span class="toc-text">ManualJudgment  手动判断</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Check-Preconditions-%E6%A3%80%E6%9F%A5%E5%89%8D%E7%BD%AE%E6%9D%A1%E4%BB%B6"><span class="toc-number">5.2.7.</span> <span class="toc-text">Check Preconditions  检查前置条件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Bake-Manifest"><span class="toc-number">5.2.8.</span> <span class="toc-text">Bake(Manifest)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Delete-Deploy-Disable-Enable%EF%BC%88Manifest%EF%BC%89"><span class="toc-number">5.2.9.</span> <span class="toc-text">Delete&#x2F;Deploy&#x2F;Disable&#x2F;Enable（Manifest）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-Spinnaker%E5%BA%94%E7%94%A8%E9%83%A8%E7%BD%B2"><span class="toc-number">6.</span> <span class="toc-text">6. Spinnaker应用部署</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%BA%94%E7%94%A8%E5%92%8C%E9%A1%B9%E7%9B%AE"><span class="toc-number">6.1.</span> <span class="toc-text">创建一个应用和项目</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%B9%B6%E6%B7%BB%E5%8A%A0Deploy%E9%98%B6%E6%AE%B5"><span class="toc-number">6.2.</span> <span class="toc-text">创建流水线并添加Deploy阶段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%B9%B6%E6%B7%BB%E5%8A%A0Deploy%E9%98%B6%E6%AE%B5-1"><span class="toc-number">6.3.</span> <span class="toc-text">创建流水线并添加Deploy阶段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C%E6%B5%81%E6%B0%B4%E7%BA%BF%E8%BF%9B%E8%A1%8C%E9%83%A8%E7%BD%B2"><span class="toc-number">6.4.</span> <span class="toc-text">运行流水线进行部署</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-CICD%E9%83%A8%E5%88%86%E5%AE%9E%E7%8E%B0"><span class="toc-number">7.</span> <span class="toc-text">7. CICD部分实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%87%86%E5%A4%87%E4%BB%A3%E7%A0%81%E5%BA%93"><span class="toc-number">7.0.1.</span> <span class="toc-text">准备代码库</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Jenkins"><span class="toc-number">7.0.2.</span> <span class="toc-text">Jenkins</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Gitlab"><span class="toc-number">7.0.3.</span> <span class="toc-text">Gitlab</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Spinnaker"><span class="toc-number">7.0.4.</span> <span class="toc-text">Spinnaker</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%A0%E8%BE%BE%E9%95%9C%E5%83%8F%E5%8F%82%E6%95%B0"><span class="toc-number">7.0.5.</span> <span class="toc-text">传达镜像参数</span></a></li></ol></li></ol></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021  <i id="heartbeat" class="fa fas fa-heartbeat"></i> Lustudio</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, welcome to my <a target="_blank" rel="noopener" href="https://butterfly.js.org/">blog</a>!</div></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/HCLonely/images@master/others/heartbeat.min.css"></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font-plus" type="button" title="放大字体"><i class="fas fa-plus"></i></button><button id="font-minus" type="button" title="缩小字体"><i class="fas fa-minus"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',preloader.endLoading())</script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

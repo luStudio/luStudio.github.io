@@ -1,0 +1,214 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>GitLab-Pipeline语法-pipline syntax-2 | Lustudio</title><meta name="keywords" content="gitlab"><meta name="author" content="Lustudio"><meta name="copyright" content="Lustudio"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="pipeline syntax 2tags&#x2F;allow_failure&#x2F;when&#x2F;retry&#x2F;timeout&#x2F;parallel tags用于从允许运行该项目的所有Runner列表中选择特定的Runner,在Runner注册期间，您可以指定Runner的标签。tags可让您使用指定了标签的runner来运行作业,此runner具有ruby和postgres标签。 1234job:  tags:">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GitLab-Pipeline语法-pipline syntax-2">
+<meta property="og:url" content="http://example.com/2020/12/21/GitLab-Pipeline%E8%AF%AD%E6%B3%95-pipline-syntax-2/index.html">
+<meta property="og:site_name" content="Lustudio">
+<meta property="og:description" content="pipeline syntax 2tags&#x2F;allow_failure&#x2F;when&#x2F;retry&#x2F;timeout&#x2F;parallel tags用于从允许运行该项目的所有Runner列表中选择特定的Runner,在Runner注册期间，您可以指定Runner的标签。tags可让您使用指定了标签的runner来运行作业,此runner具有ruby和postgres标签。 1234job:  tags:">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2020-12-21T06:58:27.000Z">
+<meta property="article:modified_time" content="2021-04-16T05:55:17.000Z">
+<meta property="article:author" content="Lustudio">
+<meta property="article:tag" content="gitlab">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2020/12/21/GitLab-Pipeline%E8%AF%AD%E6%B3%95-pipline-syntax-2/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":300},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'mediumZoom',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'GitLab-Pipeline语法-pipline syntax-2',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-04-16 13:55:17'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const fontSizeVal = saveToLocal.get('global-font-size')
+    if (fontSizeVal !== undefined) {
+      document.documentElement.style.setProperty('--global-font-size', fontSizeVal + 'px')
+    }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQae-91xlO6GYrOzk-6P_ZgTFMVDGq7tliWjw&amp;usqp=CAU" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">69</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">18</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">18</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Lustudio</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">GitLab-Pipeline语法-pipline syntax-2</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-12-21T06:58:27.000Z" title="发表于 2020-12-21 14:58:27">2020-12-21</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-04-16T05:55:17.000Z" title="更新于 2021-04-16 13:55:17">2021-04-16</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/gitlab/">gitlab</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="GitLab-Pipeline语法-pipline syntax-2"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="pipeline-syntax-2"><a href="#pipeline-syntax-2" class="headerlink" title="pipeline syntax 2"></a>pipeline syntax 2</h1><p>tags/allow_failure/when/retry/timeout/parallel</p>
+<h2 id="tags"><a href="#tags" class="headerlink" title="tags"></a>tags</h2><p>用于从允许运行该项目的所有Runner列表中选择特定的Runner,在Runner注册期间，您可以指定Runner的标签。<br>tags可让您使用指定了标签的runner来运行作业,此runner具有ruby和postgres标签。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">job:</span><br><span class="line">  tags:</span><br><span class="line">    - ruby</span><br><span class="line">    - postgres</span><br></pre></td></tr></tbody></table></figure>
+<p>给定带有osx标签的OS X Runner和带有windows标签的Windows Runner，以下作业将在各自的平台上运行。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">windows job:</span><br><span class="line">  stage:</span><br><span class="line">    - build</span><br><span class="line">  tags:</span><br><span class="line">    - windows</span><br><span class="line">  script:</span><br><span class="line">    - echo Hello, %USERNAME%!</span><br><span class="line"></span><br><span class="line">osx job:</span><br><span class="line">  stage:</span><br><span class="line">    - build</span><br><span class="line">  tags:</span><br><span class="line">    - osx</span><br><span class="line">  script:</span><br><span class="line">    - echo "Hello, $USER!"</span><br></pre></td></tr></tbody></table></figure>
+<p><img src="https://i.loli.net/2020/07/24/mr54peGjoJNdngL.png" alt="09.png"></p>
+<h2 id="allow-failure"><a href="#allow-failure" class="headerlink" title="allow_failure"></a>allow_failure</h2><p>allow_failure允许作业失败，默认值为false 。启用后，如果作业失败，该作业将在用户界面中显示橙色警告. 但是，管道的逻辑流程将认为作业成功/通过，并且不会被阻塞。 假设所有其他作业均成功，则该作业的阶段及其管道将显示相同的橙色警告。但是，关联的提交将被标记为”通过”，而不会发出警告。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">job1:</span><br><span class="line">  stage: test</span><br><span class="line">  script:</span><br><span class="line">    - execute_script_that_will_fail</span><br><span class="line">  allow_failure: true</span><br></pre></td></tr></tbody></table></figure>
+<p><img src="https://i.loli.net/2020/07/24/CkDUhAPFG81YOTb.png" alt="10.png"></p>
+<h2 id="when"><a href="#when" class="headerlink" title="when"></a>when</h2><ul>
+<li>on_success前面阶段中的所有作业都成功（或由于标记为allow_failure而被视为成功）时才执行作业。 这是默认值。</li>
+<li>on_failure当前面阶段出现失败则执行。</li>
+<li>always -执行作业，而不管先前阶段的作业状态如何，放到最后执行。总是执行。</li>
+<li>manual -手动执行作业,不会自动执行，需要由用户显式启动. 手动操作的示例用法是部署到生产环境. 可以从管道，作业，环境和部署视图开始手动操作。</li>
+<li>delayed 延迟一定时间后执行作业（在GitLab 11.14中已添加）有效值’5’,10 seconds,30 minutes, 1 day, 1 week 。<br>此时在deploy阶段添加manual，则流水线运行到deploy阶段为锁定状态，需要手动点击按钮才能运行deploy阶段。</li>
+</ul>
+<p><img src="https://i.loli.net/2020/07/24/H9B7mtsxe4zaRlk.png" alt="11.png"></p>
+<p><img src="https://i.loli.net/2020/07/24/Bv2jrdyqf6amMCI.png" alt="12.png"></p>
+<p>实验demo</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">before_script:</span><br><span class="line">  - echo "before-script!!"</span><br><span class="line"></span><br><span class="line">variables:</span><br><span class="line">  DOMAIN: example.com</span><br><span class="line">  </span><br><span class="line">stages:</span><br><span class="line">  - build</span><br><span class="line">  - test</span><br><span class="line">  - codescan</span><br><span class="line">  - deploy</span><br><span class="line"></span><br><span class="line">build:</span><br><span class="line">  before_script:</span><br><span class="line">    - echo "before-script in job"</span><br><span class="line">  stage: build</span><br><span class="line">  script:</span><br><span class="line">    - echo "mvn clean "</span><br><span class="line">    - echo "mvn install"</span><br><span class="line">    - echo "$DOMAIN"</span><br><span class="line">  after_script:</span><br><span class="line">    - echo "after script in buildjob"</span><br><span class="line"></span><br><span class="line">unittest:</span><br><span class="line">  stage: test</span><br><span class="line">  script:</span><br><span class="line">    - ech "run test"</span><br><span class="line">  when: delayed</span><br><span class="line">  start_in: '30'</span><br><span class="line">  allow_failure: true</span><br><span class="line">  </span><br><span class="line"></span><br><span class="line">deploy:</span><br><span class="line">  stage: deploy</span><br><span class="line">  script:</span><br><span class="line">    - echo "hello deploy"</span><br><span class="line">    - sleep 2;</span><br><span class="line">  when: manual</span><br><span class="line">  </span><br><span class="line">codescan:</span><br><span class="line">  stage: codescan</span><br><span class="line">  script:</span><br><span class="line">    - echo "codescan"</span><br><span class="line">    - sleep 5;</span><br><span class="line">  when: on_success</span><br><span class="line"> </span><br><span class="line">after_script:</span><br><span class="line">  - echo "after-script"</span><br><span class="line">  - ech</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="retry"><a href="#retry" class="headerlink" title="retry"></a>retry</h2><p>配置在失败的情况下重试作业的次数。</p>
+<p>当作业失败并配置了retry ，将再次处理该作业，直到达到retry关键字指定的次数。如果retry设置为2，并且作业在第二次运行成功（第一次重试），则不会再次重试. retry值必须是一个正整数，等于或大于0，但小于或等于2（最多两次重试，总共运行3次）.</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">unittest:</span><br><span class="line">  stage: test</span><br><span class="line">  retry: 2</span><br><span class="line">  script:</span><br><span class="line">    - ech "run test"</span><br></pre></td></tr></tbody></table></figure>
+<p><img src="https://i.loli.net/2020/07/24/5QN9IOSmr8Tsz2x.png" alt="19.png"><br>默认情况下，将在所有失败情况下重试作业。为了更好地控制retry哪些失败，可以是具有以下键的哈希值：</p>
+<p>max ：最大重试次数.<br>when ：重试失败的案例.<br>根据错误原因设置重试的次数。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">always ：在发生任何故障时重试（默认）.</span><br><span class="line">unknown_failure ：当失败原因未知时。</span><br><span class="line">script_failure ：脚本失败时重试。</span><br><span class="line">api_failure ：API失败重试。</span><br><span class="line">stuck_or_timeout_failure ：作业卡住或超时时。</span><br><span class="line">runner_system_failure ：运行系统发生故障。</span><br><span class="line">missing_dependency_failure: 如果依赖丢失。</span><br><span class="line">runner_unsupported ：Runner不受支持。</span><br><span class="line">stale_schedule ：无法执行延迟的作业。</span><br><span class="line">job_execution_timeout ：脚本超出了为作业设置的最大执行时间。</span><br><span class="line">archived_failure ：作业已存档且无法运行。</span><br><span class="line">unmet_prerequisites ：作业未能完成先决条件任务。</span><br><span class="line">scheduler_failure ：调度程序未能将作业分配给运行scheduler_failure。</span><br><span class="line">data_integrity_failure ：检测到结构完整性问题。</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><p>定义当出现脚本错误重试两次，也就是会运行三次。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">unittest:</span><br><span class="line">  stage: test</span><br><span class="line">  tags:</span><br><span class="line">    - build</span><br><span class="line">  only:</span><br><span class="line">    - master</span><br><span class="line">  script:</span><br><span class="line">    - ech "run test"</span><br><span class="line">  retry:</span><br><span class="line">    max: 2</span><br><span class="line">    when:</span><br><span class="line">      - script_failure</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="timeout-超时"><a href="#timeout-超时" class="headerlink" title="timeout 超时"></a>timeout 超时</h2><p>特定作业配置超时，作业级别的超时可以超过项目级别的超时，但不能超过Runner特定的超时。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">build:</span><br><span class="line">  script: build.sh</span><br><span class="line">  timeout: 3 hours 30 minutes</span><br><span class="line"></span><br><span class="line">test:</span><br><span class="line">  script: rspec</span><br><span class="line">  timeout: 3h 30m</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="项目设置流水线超时时间"><a href="#项目设置流水线超时时间" class="headerlink" title="项目设置流水线超时时间"></a>项目设置流水线超时时间</h2><p>超时定义了作业可以运行的最长时间（以分钟为单位）。 这可以在项目的“设置”&gt;” CI / CD”&gt;“常规管道”设置下进行配置 。 默认值为60分钟。<br><img src="https://i.loli.net/2020/07/24/zBgm3CnL1D8tePs.png" alt="14.png"></p>
+<h2 id="runner超时时间"><a href="#runner超时时间" class="headerlink" title="runner超时时间"></a>runner超时时间</h2><p>此类超时（如果小于项目定义的超时 ）将具有优先权。此功能可用于通过设置大超时（例如一个星期）来防止Shared Runner被项目占用。未配置时，Runner将不会覆盖项目超时。<br><img src="https://i.loli.net/2020/07/24/O957s1epLYnwZ2d.png" alt="15.png"></p>
+<p>此功能如何工作：</p>
+<p>示例1-运行程序超时大于项目超时</p>
+<p>runner超时设置为24小时，项目的CI / CD超时设置为2小时。该工作将在2小时后超时。</p>
+<p>示例2-未配置运行程序超时</p>
+<p>runner不设置超时时间，项目的CI / CD超时设置为2小时。该工作将在2小时后超时。</p>
+<p>示例3-运行程序超时小于项目超时</p>
+<p>runner超时设置为30分钟，项目的CI / CD超时设置为2小时。工作在30分钟后将超时</p>
+<h2 id="parallel"><a href="#parallel" class="headerlink" title="parallel"></a>parallel</h2><p>配置要并行运行的作业实例数,此值必须大于或等于2并且小于或等于50。</p>
+<p>这将创建N个并行运行的同一作业实例. 它们从job_name 1/N到job_name N/N依次命名。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">codescan:</span><br><span class="line">  stage: codescan</span><br><span class="line">  tags:</span><br><span class="line">    - build</span><br><span class="line">  only:</span><br><span class="line">    - master</span><br><span class="line">  script:</span><br><span class="line">    - echo "codescan"</span><br><span class="line">    - sleep 5;</span><br><span class="line">  parallel: 5</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="综合实例"><a href="#综合实例" class="headerlink" title="综合实例"></a>综合实例</h2><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">before_script:</span><br><span class="line">  - echo "before-script!!"</span><br><span class="line"></span><br><span class="line">variables:</span><br><span class="line">  DOMAIN: example.comauto_detect</span><br><span class="line">  </span><br><span class="line">stages:</span><br><span class="line">  - build</span><br><span class="line">  - test</span><br><span class="line">  - codescan</span><br><span class="line">  - deploy</span><br><span class="line"></span><br><span class="line">build:</span><br><span class="line">  before_script:</span><br><span class="line">    - echo "before-script in job"</span><br><span class="line">  stage: build</span><br><span class="line">  script:</span><br><span class="line">    - echo "mvn clean "</span><br><span class="line">    - echo "mvn install"</span><br><span class="line">    - echo "$DOMAIN"</span><br><span class="line">  after_script:</span><br><span class="line">    - echo "after script in buildjob"</span><br><span class="line"></span><br><span class="line">unittest:</span><br><span class="line">  stage: test</span><br><span class="line">  script:</span><br><span class="line">    - ech "run test"</span><br><span class="line">  when: delayed</span><br><span class="line">  start_in: '5'</span><br><span class="line">  allow_failure: true</span><br><span class="line">  retry:</span><br><span class="line">    max: 1</span><br><span class="line">    when:</span><br><span class="line">      - script_failure</span><br><span class="line">  timeout: 1 hours 10 minutes</span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line"></span><br><span class="line">deploy:</span><br><span class="line">  stage: deploy</span><br><span class="line">  script:</span><br><span class="line">    - echo "hello deploy"</span><br><span class="line">    - sleep 2;</span><br><span class="line">  when: manual</span><br><span class="line">  </span><br><span class="line">codescan:</span><br><span class="line">  stage: codescan</span><br><span class="line">  script:</span><br><span class="line">    - echo "codescan"</span><br><span class="line">    - sleep 5;</span><br><span class="line">  when: on_success</span><br><span class="line">  parallel: 5</span><br><span class="line"> </span><br><span class="line">after_script:</span><br><span class="line">  - echo "after-script"</span><br><span class="line">  - ech</span><br></pre></td></tr></tbody></table></figure></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Lustudio</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2020/12/21/GitLab-Pipeline%E8%AF%AD%E6%B3%95-pipline-syntax-2/">http://example.com/2020/12/21/GitLab-Pipeline%E8%AF%AD%E6%B3%95-pipline-syntax-2/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">Lustudio</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/gitlab/">gitlab</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/12/21/docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/"><img class="prev-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">docker常用命令</div></div></a></div><div class="next-post pull-right"><a href="/2020/12/21/%E4%BD%BF%E7%94%A8-GitLab-CI-%E4%B8%8E-Argo-CD-%E8%BF%9B%E8%A1%8C-GitOps-%E5%AE%9E%E8%B7%B5/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">使用-GitLab-CI-与-Argo-CD-进行-GitOps-实践</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2020/12/21/GitLab-Pipeline语法-pipline-syntax-1/" title="GitLab-Pipeline语法-pipline-syntax-1"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-21</div><div class="title">GitLab-Pipeline语法-pipline-syntax-1</div></div></a></div><div><a href="/2020/12/21/GitLab-Pipeline语法-pipline-syntax-4/" title="GitLab-Pipeline语法-pipline-syntax-4"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-21</div><div class="title">GitLab-Pipeline语法-pipline-syntax-4</div></div></a></div><div><a href="/2020/12/21/GitLab-Pipeline语法-pipline-syntax-5/" title="GitLab-Pipeline语法-pipline-syntax-5"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-21</div><div class="title">GitLab-Pipeline语法-pipline-syntax-5</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#pipeline-syntax-2"><span class="toc-number">1.</span> <span class="toc-text">pipeline syntax 2</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#tags"><span class="toc-number">1.1.</span> <span class="toc-text">tags</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#allow-failure"><span class="toc-number">1.2.</span> <span class="toc-text">allow_failure</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#when"><span class="toc-number">1.3.</span> <span class="toc-text">when</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#retry"><span class="toc-number">1.4.</span> <span class="toc-text">retry</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C"><span class="toc-number">1.5.</span> <span class="toc-text">实验</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#timeout-%E8%B6%85%E6%97%B6"><span class="toc-number">1.6.</span> <span class="toc-text">timeout 超时</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E8%AE%BE%E7%BD%AE%E6%B5%81%E6%B0%B4%E7%BA%BF%E8%B6%85%E6%97%B6%E6%97%B6%E9%97%B4"><span class="toc-number">1.7.</span> <span class="toc-text">项目设置流水线超时时间</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#runner%E8%B6%85%E6%97%B6%E6%97%B6%E9%97%B4"><span class="toc-number">1.8.</span> <span class="toc-text">runner超时时间</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#parallel"><span class="toc-number">1.9.</span> <span class="toc-text">parallel</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%BC%E5%90%88%E5%AE%9E%E4%BE%8B"><span class="toc-number">1.10.</span> <span class="toc-text">综合实例</span></a></li></ol></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021  <i id="heartbeat" class="fa fas fa-heartbeat"></i> Lustudio</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, welcome to my <a target="_blank" rel="noopener" href="https://butterfly.js.org/">blog</a>!</div></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/HCLonely/images@master/others/heartbeat.min.css"></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font-plus" type="button" title="放大字体"><i class="fas fa-plus"></i></button><button id="font-minus" type="button" title="缩小字体"><i class="fas fa-minus"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',preloader.endLoading())</script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>GitLab-Pipeline语法-pipline-syntax-5 | Lustudio</title><meta name="keywords" content="gitlab"><meta name="author" content="Lustudio"><meta name="copyright" content="Lustudio"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="pipeline syntax 5artifacts&#x2F;dependencies artifacts用于指定在作业成功或者失败时应附加到作业的文件或目录的列表。作业完成后，工件将被发送到GitLab，并可在GitLab UI中下载。 artifacts:paths路径是相对于项目目录的，不能直接链接到项目目录之外。 将制品设置为target目录 123artifacts:  paths:    -">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GitLab-Pipeline语法-pipline-syntax-5">
+<meta property="og:url" content="http://example.com/2020/12/21/GitLab-Pipeline%E8%AF%AD%E6%B3%95-pipline-syntax-5/index.html">
+<meta property="og:site_name" content="Lustudio">
+<meta property="og:description" content="pipeline syntax 5artifacts&#x2F;dependencies artifacts用于指定在作业成功或者失败时应附加到作业的文件或目录的列表。作业完成后，工件将被发送到GitLab，并可在GitLab UI中下载。 artifacts:paths路径是相对于项目目录的，不能直接链接到项目目录之外。 将制品设置为target目录 123artifacts:  paths:    -">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2020-12-21T07:05:57.000Z">
+<meta property="article:modified_time" content="2020-12-30T05:50:42.000Z">
+<meta property="article:author" content="Lustudio">
+<meta property="article:tag" content="gitlab">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2020/12/21/GitLab-Pipeline%E8%AF%AD%E6%B3%95-pipline-syntax-5/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":300},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'mediumZoom',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'GitLab-Pipeline语法-pipline-syntax-5',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2020-12-30 13:50:42'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const fontSizeVal = saveToLocal.get('global-font-size')
+    if (fontSizeVal !== undefined) {
+      document.documentElement.style.setProperty('--global-font-size', fontSizeVal + 'px')
+    }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQae-91xlO6GYrOzk-6P_ZgTFMVDGq7tliWjw&amp;usqp=CAU" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">69</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">18</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">18</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Lustudio</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">GitLab-Pipeline语法-pipline-syntax-5</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-12-21T07:05:57.000Z" title="发表于 2020-12-21 15:05:57">2020-12-21</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2020-12-30T05:50:42.000Z" title="更新于 2020-12-30 13:50:42">2020-12-30</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/gitlab/">gitlab</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="GitLab-Pipeline语法-pipline-syntax-5"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="pipeline-syntax-5"><a href="#pipeline-syntax-5" class="headerlink" title="pipeline syntax 5"></a>pipeline syntax 5</h1><p><code>artifacts/dependencies</code></p>
+<h2 id="artifacts"><a href="#artifacts" class="headerlink" title="artifacts"></a>artifacts</h2><p>用于指定在作业成功或者失败时应附加到作业的文件或目录的列表。作业完成后，工件将被发送到GitLab，并可在GitLab UI中下载。</p>
+<h3 id="artifacts-paths"><a href="#artifacts-paths" class="headerlink" title="artifacts:paths"></a>artifacts:paths</h3><p>路径是相对于项目目录的，不能直接链接到项目目录之外。</p>
+<p>将制品设置为target目录</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">artifacts:</span><br><span class="line">  paths:</span><br><span class="line">    - target/</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://i.loli.net/2020/07/30/7CV8YoHQTxMKtn5.png" alt="216.png"></p>
+<p>禁用工件传递</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">job:</span><br><span class="line">  stage: build</span><br><span class="line">  script: make build</span><br><span class="line">  dependencies: []</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+<p>您可能只想为标记的发行版创建构件，以避免用临时构建构件填充构建服务器存储。仅为标签创建工件（ default-job不会创建工件）：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">default-job:</span><br><span class="line">  script:</span><br><span class="line">    - mvn test -U</span><br><span class="line">  except:</span><br><span class="line">    - tags</span><br><span class="line"></span><br><span class="line">release-job:</span><br><span class="line">  script:</span><br><span class="line">    - mvn package -U</span><br><span class="line">  artifacts:</span><br><span class="line">    paths:</span><br><span class="line">      - target/*.war</span><br><span class="line">  only:</span><br><span class="line">    - tags</span><br></pre></td></tr></tbody></table></figure>
+
+
+<h3 id="artifacts-expose-as"><a href="#artifacts-expose-as" class="headerlink" title="artifacts:expose_as"></a>artifacts:expose_as</h3><p>关键字expose_as可用于在合并请求 UI中公开作业工件。</p>
+<p>例如，要匹配单个文件：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">test:</span><br><span class="line">  script: </span><br><span class="line">    - echo 1</span><br><span class="line">  artifacts:</span><br><span class="line">    expose_as: 'artifact 1'</span><br><span class="line">    paths: </span><br><span class="line">      - path/to/file.txt</span><br></pre></td></tr></tbody></table></figure>
+<p>使用此配置，GitLab将在指向的相关合并请求中添加链接file1.txt。</p>
+<p><img src="https://i.loli.net/2020/07/30/YHj5zmwr9nGc1NL.png" alt="27.png"></p>
+<p>制品浏览</p>
+<p><img src="https://i.loli.net/2020/07/30/4Td6Mx8UJ3HwbZc.png" alt="28.png"></p>
+<ul>
+<li>请注意以下几点：<ul>
+<li>每个合并请求最多可以公开10个作业工件。</li>
+<li>如果指定了目录，那么如果目录中有多个文件，则该链接将指向指向作业工件浏览器。</li>
+<li>如果开启GitlabPages可以对.html .htm .txt .json .log扩展名单个文件工件渲染工件。</li>
+</ul>
+</li>
+</ul>
+<h3 id="artifacts-name"><a href="#artifacts-name" class="headerlink" title="artifacts:name"></a>artifacts:name</h3><p>通过name指令定义所创建的工件存档的名称。可以为每个档案使用唯一的名称。 artifacts:name变量可以使用任何预定义变量。默认名称是artifacts，下载artifacts改为artifacts.zip。</p>
+<p>使用当前作业的名称创建档案</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">job:</span><br><span class="line">  artifacts:</span><br><span class="line">    name: "$CI_JOB_NAME"</span><br><span class="line">    paths:</span><br><span class="line">      - binaries/</span><br></pre></td></tr></tbody></table></figure>
+<p>使用内部分支或标记的名称（仅包括binaries目录）创建档案，</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">job:</span><br><span class="line">  artifacts:</span><br><span class="line">    name: "$CI_COMMIT_REF_NAME"</span><br><span class="line">    paths:</span><br><span class="line">      - binaries/</span><br></pre></td></tr></tbody></table></figure>
+<p>使用当前作业的名称和当前分支或标记（仅包括二进制文件目录）创建档案</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">job:</span><br><span class="line">  artifacts:</span><br><span class="line">    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"</span><br><span class="line">    paths:</span><br><span class="line">      - binaries/</span><br></pre></td></tr></tbody></table></figure>
+<p>要创建一个具有当前阶段名称和分支名称的档案</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">job:</span><br><span class="line">  artifacts:</span><br><span class="line">    name: "$CI_JOB_STAGE-$CI_COMMIT_REF_NAME"</span><br><span class="line">    paths:</span><br><span class="line">      - binaries/</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="artifacts-when"><a href="#artifacts-when" class="headerlink" title="artifacts:when"></a>artifacts:when</h3><p>用于在作业失败时或尽管失败而上传工件。on_success仅在作业成功时上载工件。这是默认值。on_failure仅在作业失败时上载工件。always 上载工件，无论作业状态如何。</p>
+<p>要仅在作业失败时上传工件：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">job:</span><br><span class="line">  artifacts:</span><br><span class="line">    when: on_failure</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="artifacts-expire-in"><a href="#artifacts-expire-in" class="headerlink" title="artifacts:expire_in"></a>artifacts:expire_in</h3><p>制品的有效期，从上传和存储到GitLab的时间开始算起。如果未定义过期时间，则默认为30天。</p>
+<p>expire_in的值以秒为单位的经过时间，除非提供了单位。可解析值的示例：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">‘42’</span><br><span class="line">‘3 mins 4 sec’</span><br><span class="line">‘2 hrs 20 min’</span><br><span class="line">‘2h20min’</span><br><span class="line">‘6 mos 1 day’</span><br><span class="line">‘47 yrs 6 mos and 4d’</span><br><span class="line">‘3 weeks and 2 days’</span><br></pre></td></tr></tbody></table></figure>
+<p>一周后过期</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">job:</span><br><span class="line">  artifacts:</span><br><span class="line">    expire_in: 1 week</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h3 id="artifacts-reports"><a href="#artifacts-reports" class="headerlink" title="artifacts:reports"></a>artifacts:reports</h3><p>用于从作业中收集测试报告，代码质量报告和安全报告. 在GitLab的UI中显示这些报告。</p>
+<p>注意：无论作业结果（成功或失败），都将收集测试报告。</p>
+<ul>
+<li>artifacts:reports:junit<br>收集junit单元测试报告，收集的JUnit报告将作为工件上传到GitLab，并将自动显示在合并请求中。</li>
+</ul>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">build:</span><br><span class="line">  stage: build</span><br><span class="line">  tags:</span><br><span class="line">    - build</span><br><span class="line">  only:</span><br><span class="line">    - master</span><br><span class="line">  script:</span><br><span class="line">    - mvn test</span><br><span class="line">    - mvn cobertura:cobertura</span><br><span class="line">    - ls target</span><br><span class="line">  artifacts:</span><br><span class="line">    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"</span><br><span class="line">    when: on_success</span><br><span class="line">    expose_as: 'artifact 1'</span><br><span class="line">    paths:</span><br><span class="line">      - target/*.jar</span><br><span class="line">    reports:</span><br><span class="line">      junit: target/surefire-reports/TEST-*.xml</span><br></pre></td></tr></tbody></table></figure>
+<p>注意：如果您使用的JUnit工具导出到多个XML文件，则可以在一个作业中指定多个测试报告路径，它们将被自动串联到一个文件中. 使用文件名模式（ junit: rspec-<em>.xml ），文件名数组（ junit: [rspec-1.xml, rspec-2.xml, rspec-3.xml] ）或其组合（ junit: [rspec.xml, test-results/TEST-</em>.xml] ）。</p>
+<p><img src="https://i.loli.net/2020/07/30/qmCOiZd9NsTHR8b.png" alt="30.png"></p>
+<p>如果无法显示此页面，需要更改系统设置。此选项可能会加大资源占用，默认禁用了需要启用。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">登录gitlab</span><br><span class="line">su -  git</span><br><span class="line">$ gitlab-rails console</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line"> GitLab:       12.9.0 (9a382ff2c82) FOSS</span><br><span class="line"> GitLab Shell: 12.0.0</span><br><span class="line"> PostgreSQL:   10.12</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">Feature.enable(:junit_pipeline_view)Loading production environment (Rails 6.0.2)</span><br><span class="line">irb(main):001:0&gt;</span><br><span class="line">irb(main):002:0&gt;</span><br><span class="line">irb(main):003:0&gt; Feature.enable(:junit_pipeline_view)</span><br><span class="line">=&gt; true</span><br><span class="line">irb(main):004:0&gt;</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="artifacts-reports-cobertura"><a href="#artifacts-reports-cobertura" class="headerlink" title="artifacts:reports:cobertura"></a>artifacts:reports:cobertura</h3><p>收集的Cobertura覆盖率报告将作为工件上传到GitLab，并在合并请求中自动显示。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">build:</span><br><span class="line">  stage: build</span><br><span class="line">  tags:</span><br><span class="line">    - build</span><br><span class="line">  only:</span><br><span class="line">    - master</span><br><span class="line">  script:</span><br><span class="line">    - mvn test</span><br><span class="line">    - mvn cobertura:cobertura</span><br><span class="line">    - ls target</span><br><span class="line">  artifacts:</span><br><span class="line">    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"</span><br><span class="line">    when: on_success</span><br><span class="line">    expose_as: 'artifact 1'</span><br><span class="line">    paths:</span><br><span class="line">      - target/*.jar</span><br><span class="line">    reports:</span><br><span class="line">      junit: target/surefire-reports/TEST-*.xml</span><br><span class="line">      cobertura: target/site/cobertura/coverage.xml</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">$ gitlab-rails console</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line"> GitLab:       12.9.0 (9a382ff2c82) FOSS</span><br><span class="line"> GitLab Shell: 12.0.0</span><br><span class="line"> PostgreSQL:   10.12</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Loading production environment (Rails 6.0.2)</span><br><span class="line">irb(main):001:0&gt;</span><br><span class="line">irb(main):002:0&gt;</span><br><span class="line">irb(main):003:0&gt; Feature.enable(:coverage_report_view)</span><br><span class="line">=&gt; true</span><br></pre></td></tr></tbody></table></figure>
+<hr>
+<h2 id="maven集成cobertura插件"><a href="#maven集成cobertura插件" class="headerlink" title="maven集成cobertura插件"></a>maven集成cobertura插件</h2><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;plugins&gt;       </span><br><span class="line">  &lt;!--  cobertura plugin start --&gt;</span><br><span class="line">  &lt;plugin&gt;</span><br><span class="line">    &lt;groupId&gt;org.codehaus.mojo&lt;/groupId&gt;  </span><br><span class="line">    &lt;artifactId&gt;cobertura-maven-plugin&lt;/artifactId&gt;  </span><br><span class="line">    &lt;version&gt;2.7&lt;/version&gt;  </span><br><span class="line">    &lt;configuration&gt;  </span><br><span class="line">      &lt;formats&gt;  </span><br><span class="line">          &lt;format&gt;html&lt;/format&gt;  </span><br><span class="line">          &lt;format&gt;xml&lt;/format&gt;  </span><br><span class="line">      &lt;/formats&gt;  </span><br><span class="line">  	&lt;/configuration&gt;  </span><br><span class="line">  &lt;/plugin&gt;       </span><br><span class="line">  &lt;!--  cobertura plugin end --&gt;</span><br><span class="line"></span><br><span class="line">&lt;/plugins&gt;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>执行 mvn cobertura:cobertura 运行测试并产生 Cobertura 覆盖率报告。</p>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://docs.gitlab.com/12.9/ee/user/project/merge_requests/test_coverage_visualization.html">https://docs.gitlab.com/12.9/ee/user/project/merge_requests/test_coverage_visualization.html</a></p>
+<p>备注实验未做出效果，具体问题待排查。</p>
+<p><img src="https://i.loli.net/2020/07/30/RahuPCwE9fybqGO.png" alt="31.png"></p>
+<h2 id="dependencies"><a href="#dependencies" class="headerlink" title="dependencies"></a>dependencies</h2><p>定义要获取工件的作业列表，只能从当前阶段之前执行的阶段定义作业。定义一个空数组将跳过下载该作业的任何工件不会考虑先前作业的状态，因此，如果它失败或是未运行的手动作业，则不会发生错误。</p>
+<p><img src="https://i.loli.net/2020/07/30/kRATYL1SnV7JQMq.png" alt="32.png"></p>
+<p>如果设置为依赖项的作业的工件已过期或删除，那么依赖项作业将失败。</p>
+<h2 id="综合实例"><a href="#综合实例" class="headerlink" title="综合实例"></a>综合实例</h2><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line">before_script:</span><br><span class="line">  - echo "before-script!!"</span><br><span class="line"></span><br><span class="line">variables:</span><br><span class="line">  DOMAIN: example.com</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">cache: </span><br><span class="line">  paths:</span><br><span class="line">   - target/</span><br><span class="line"></span><br><span class="line">stages:</span><br><span class="line">  - build</span><br><span class="line">  - test</span><br><span class="line">  - deploy</span><br><span class="line">  </span><br><span class="line">build:</span><br><span class="line">  before_script:</span><br><span class="line">    - echo "before-script in job"</span><br><span class="line">  stage: build</span><br><span class="line">  tags:</span><br><span class="line">    - build</span><br><span class="line">  only:</span><br><span class="line">    - master</span><br><span class="line">  script:</span><br><span class="line">    - ls</span><br><span class="line">    - id</span><br><span class="line">    - mvn test</span><br><span class="line">    - mvn cobertura:cobertura</span><br><span class="line">    - ls target</span><br><span class="line">    - echo "$DOMAIN"</span><br><span class="line">    - false &amp;&amp; true ; exit_code=$?</span><br><span class="line">    - if [ $exit_code -ne 0 ]; then echo "Previous command failed"; fi;</span><br><span class="line">    - sleep 2;</span><br><span class="line">  after_script:</span><br><span class="line">    - echo "after script in job"</span><br><span class="line">  artifacts:</span><br><span class="line">    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"</span><br><span class="line">    when: on_success</span><br><span class="line">    #expose_as: 'artifact 1'</span><br><span class="line">    paths:</span><br><span class="line">      - target/*.jar</span><br><span class="line">      #- target/surefire-reports/TEST*.xml</span><br><span class="line">    reports:</span><br><span class="line">      junit: target/surefire-reports/TEST-*.xml</span><br><span class="line">      cobertura: target/site/cobertura/coverage.xml</span><br><span class="line">  coverage: '/Code coverage: \d+\.\d+/'</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">unittest:</span><br><span class="line">  dependencies:</span><br><span class="line">    - build</span><br><span class="line">  stage: test</span><br><span class="line">  tags:</span><br><span class="line">    - build</span><br><span class="line">  only:</span><br><span class="line">    - master</span><br><span class="line">  script:</span><br><span class="line">    - echo "run test"</span><br><span class="line">    - echo 'test' &gt;&gt; target/a.txt</span><br><span class="line">    - ls target</span><br><span class="line">  retry:</span><br><span class="line">    max: 2</span><br><span class="line">    when:</span><br><span class="line">      - script_failure</span><br><span class="line">  </span><br><span class="line">deploy:</span><br><span class="line">  stage: deploy</span><br><span class="line">  tags:</span><br><span class="line">    - build</span><br><span class="line">  only:</span><br><span class="line">    - master</span><br><span class="line">  script:</span><br><span class="line">    - echo "run deploy"</span><br><span class="line">    - ls target</span><br><span class="line">  retry:</span><br><span class="line">    max: 2</span><br><span class="line">    when:</span><br><span class="line">      - script_failure</span><br><span class="line">      </span><br><span class="line">      </span><br><span class="line"></span><br><span class="line">after_script:</span><br><span class="line">  - echo "after-script"</span><br></pre></td></tr></tbody></table></figure></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Lustudio</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2020/12/21/GitLab-Pipeline%E8%AF%AD%E6%B3%95-pipline-syntax-5/">http://example.com/2020/12/21/GitLab-Pipeline%E8%AF%AD%E6%B3%95-pipline-syntax-5/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">Lustudio</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/gitlab/">gitlab</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/12/21/GitLab-Pipeline%E8%AF%AD%E6%B3%95-pipline-syntax-6/"><img class="prev-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">GitLab-Pipeline语法-pipline-syntax-6</div></div></a></div><div class="next-post pull-right"><a href="/2020/12/21/GitLab-Pipeline%E8%AF%AD%E6%B3%95-pipline-syntax-4/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">GitLab-Pipeline语法-pipline-syntax-4</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2020/12/21/GitLab-Pipeline语法-pipline-syntax-2/" title="GitLab-Pipeline语法-pipline syntax-2"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-21</div><div class="title">GitLab-Pipeline语法-pipline syntax-2</div></div></a></div><div><a href="/2020/12/21/GitLab-Pipeline语法-pipline-syntax-1/" title="GitLab-Pipeline语法-pipline-syntax-1"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-21</div><div class="title">GitLab-Pipeline语法-pipline-syntax-1</div></div></a></div><div><a href="/2020/12/21/GitLab-Pipeline语法-pipline-syntax-4/" title="GitLab-Pipeline语法-pipline-syntax-4"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-21</div><div class="title">GitLab-Pipeline语法-pipline-syntax-4</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#pipeline-syntax-5"><span class="toc-number">1.</span> <span class="toc-text">pipeline syntax 5</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#artifacts"><span class="toc-number">1.1.</span> <span class="toc-text">artifacts</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#artifacts-paths"><span class="toc-number">1.1.1.</span> <span class="toc-text">artifacts:paths</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#artifacts-expose-as"><span class="toc-number">1.1.2.</span> <span class="toc-text">artifacts:expose_as</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#artifacts-name"><span class="toc-number">1.1.3.</span> <span class="toc-text">artifacts:name</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#artifacts-when"><span class="toc-number">1.1.4.</span> <span class="toc-text">artifacts:when</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#artifacts-expire-in"><span class="toc-number">1.1.5.</span> <span class="toc-text">artifacts:expire_in</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#artifacts-reports"><span class="toc-number">1.1.6.</span> <span class="toc-text">artifacts:reports</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#artifacts-reports-cobertura"><span class="toc-number">1.1.7.</span> <span class="toc-text">artifacts:reports:cobertura</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#maven%E9%9B%86%E6%88%90cobertura%E6%8F%92%E4%BB%B6"><span class="toc-number">1.2.</span> <span class="toc-text">maven集成cobertura插件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#dependencies"><span class="toc-number">1.3.</span> <span class="toc-text">dependencies</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%BC%E5%90%88%E5%AE%9E%E4%BE%8B"><span class="toc-number">1.4.</span> <span class="toc-text">综合实例</span></a></li></ol></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021  <i id="heartbeat" class="fa fas fa-heartbeat"></i> Lustudio</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, welcome to my <a target="_blank" rel="noopener" href="https://butterfly.js.org/">blog</a>!</div></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/HCLonely/images@master/others/heartbeat.min.css"></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font-plus" type="button" title="放大字体"><i class="fas fa-plus"></i></button><button id="font-minus" type="button" title="缩小字体"><i class="fas fa-minus"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',preloader.endLoading())</script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

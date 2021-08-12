@@ -1,0 +1,280 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Gitlab容器流水线优化-配置使用Minio分布式存储 | Lustudio</title><meta name="keywords" content="gitlab"><meta name="author" content="Lustudio"><meta name="copyright" content="Lustudio"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="配置使用分布式缓存minioMinIO 是一个基于Apache License v2.0开源协议的对象存储服务。它兼容亚马逊S3云存储服务接口，非常适合于存储大容量非结构化的数据，例如图片、视频、日志文件、备份数据和容器&#x2F;虚拟机镜像等，而一个对象文件可以是任意大小，从几kb到最大5T不等。 MinIO是一个非常轻量的服务,可以很简单的和其他应用的结合，类似 NodeJS, Redis 或者 MyS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Gitlab容器流水线优化-配置使用Minio分布式存储">
+<meta property="og:url" content="http://example.com/2020/12/31/Gitlab%E5%AE%B9%E5%99%A8%E6%B5%81%E6%B0%B4%E7%BA%BF%E4%BC%98%E5%8C%96-%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8Minio%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8/index.html">
+<meta property="og:site_name" content="Lustudio">
+<meta property="og:description" content="配置使用分布式缓存minioMinIO 是一个基于Apache License v2.0开源协议的对象存储服务。它兼容亚马逊S3云存储服务接口，非常适合于存储大容量非结构化的数据，例如图片、视频、日志文件、备份数据和容器&#x2F;虚拟机镜像等，而一个对象文件可以是任意大小，从几kb到最大5T不等。 MinIO是一个非常轻量的服务,可以很简单的和其他应用的结合，类似 NodeJS, Redis 或者 MyS">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2020-12-31T01:38:38.000Z">
+<meta property="article:modified_time" content="2020-12-31T01:48:38.000Z">
+<meta property="article:author" content="Lustudio">
+<meta property="article:tag" content="gitlab">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2020/12/31/Gitlab%E5%AE%B9%E5%99%A8%E6%B5%81%E6%B0%B4%E7%BA%BF%E4%BC%98%E5%8C%96-%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8Minio%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":300},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'mediumZoom',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Gitlab容器流水线优化-配置使用Minio分布式存储',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2020-12-31 09:48:38'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const fontSizeVal = saveToLocal.get('global-font-size')
+    if (fontSizeVal !== undefined) {
+      document.documentElement.style.setProperty('--global-font-size', fontSizeVal + 'px')
+    }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQae-91xlO6GYrOzk-6P_ZgTFMVDGq7tliWjw&amp;usqp=CAU" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">69</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">18</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">18</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Lustudio</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Gitlab容器流水线优化-配置使用Minio分布式存储</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-12-31T01:38:38.000Z" title="发表于 2020-12-31 09:38:38">2020-12-31</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2020-12-31T01:48:38.000Z" title="更新于 2020-12-31 09:48:38">2020-12-31</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/gitlab/">gitlab</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Gitlab容器流水线优化-配置使用Minio分布式存储"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="配置使用分布式缓存"><a href="#配置使用分布式缓存" class="headerlink" title="配置使用分布式缓存"></a>配置使用分布式缓存</h2><h2 id="minio"><a href="#minio" class="headerlink" title="minio"></a>minio</h2><p>MinIO 是一个基于Apache License v2.0开源协议的对象存储服务。它兼容亚马逊S3云存储服务接口，非常适合于存储大容量非结构化的数据，例如图片、视频、日志文件、备份数据和容器/虚拟机镜像等，而一个对象文件可以是任意大小，从几kb到最大5T不等。</p>
+<p>MinIO是一个非常轻量的服务,可以很简单的和其他应用的结合，类似 NodeJS, Redis 或者 MySQL。</p>
+<p>官方文档：<a target="_blank" rel="noopener" href="https://docs.min.io/cn/deploy-minio-on-kubernetes.html">https://docs.min.io/cn/deploy-minio-on-kubernetes.html</a> </p>
+<h3 id="基于Kubernetes部署"><a href="#基于Kubernetes部署" class="headerlink" title="基于Kubernetes部署"></a>基于Kubernetes部署</h3><p>准备一个pv用于存储bucket数据。这里我使用的是本地的目录”/data/devops/minio-data”，根据大家不同的环境按需调整即可。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: PersistentVolume</span><br><span class="line">metadata:</span><br><span class="line">  name: ci-minio-pv</span><br><span class="line">  namespace: devops</span><br><span class="line">  labels:</span><br><span class="line">    type: local</span><br><span class="line">spec:</span><br><span class="line">  storageClassName: manual</span><br><span class="line">  capacity:</span><br><span class="line">    storage: 50Gi</span><br><span class="line">  accessModes:</span><br><span class="line">    - ReadWriteOnce</span><br><span class="line">  hostPath:</span><br><span class="line">    path: "/data/devops/minio-data"</span><br><span class="line">---</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl create -f pv.yaml</span><br><span class="line">kubectl get pv -n devops</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h4 id="Helm-Install"><a href="#Helm-Install" class="headerlink" title="Helm Install"></a>Helm Install</h4><p>stable/minio    3.0.3  是目前最新的RELEASE版本</p>
+<p>修改minio/values.yml中的service端口为80。(可选)</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">service:</span><br><span class="line">  type: ClusterIP</span><br><span class="line">  clusterIP: ~</span><br><span class="line">  port: 80</span><br><span class="line">  nodePort: 31311</span><br><span class="line">  # externalIPs:</span><br><span class="line">  #   - externalIp1</span><br><span class="line">  annotations: {}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>修改minio/values.yml中的Ingress配置。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">ingress:</span><br><span class="line">  enabled: true</span><br><span class="line">  annotations:</span><br><span class="line">    kubernetes.io/ingress.class: nginx</span><br><span class="line">    # kubernetes.io/tls-acme: "true"</span><br><span class="line">    # kubernetes.io/ingress.allow-http: "false"</span><br><span class="line">    # kubernetes.io/ingress.global-static-ip-name: ""</span><br><span class="line">    # nginx.ingress.kubernetes.io/secure-backends: "true"</span><br><span class="line">    # nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"</span><br><span class="line">    # nginx.ingress.kubernetes.io/whitelist-source-range: 0.0.0.0/0</span><br><span class="line">  path: /</span><br><span class="line">  hosts:</span><br><span class="line">    - minio.devops.svc.cluster.local</span><br><span class="line">  tls: []</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">helm install minio --namespace=devops --set persistence.size=50Gi,persistence.VolumeName=ci-minio-pv,persistence.storageClass=manual ./minio  </span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>persistence.size=50Gi  配置PV的大小为50Gi</li>
+<li>persistence.VolumeName=ci-minio-pv  指定已存在pv名称</li>
+<li>persistence.storageClass=manual 指定pv存储的类型为manual</li>
+</ul>
+<hr>
+<p>部署成功会提示类似以下信息</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">NOTES:</span><br><span class="line">Minio can be accessed via port 80 on the following DNS name from within your cluster:</span><br><span class="line">minio.devops.svc.cluster.local</span><br><span class="line"></span><br><span class="line">To access Minio from localhost, run the below commands:</span><br><span class="line"></span><br><span class="line">  1. export POD_NAME=$(kubectl get pods --namespace devops -l "release=minio" -o jsonpath="{.items[0].metadata.name}")</span><br><span class="line"></span><br><span class="line">  2. kubectl port-forward $POD_NAME 9000 --namespace devops</span><br><span class="line"></span><br><span class="line">Read more about port forwarding here: http://kubernetes.io/docs/user-guide/kubectl/kubectl_port-forward/</span><br><span class="line"></span><br><span class="line">You can now access Minio server on http://localhost:9000. Follow the below steps to connect to Minio server with mc client:</span><br><span class="line"></span><br><span class="line">  1. Download the Minio mc client - https://docs.minio.io/docs/minio-client-quickstart-guide</span><br><span class="line"></span><br><span class="line">  2. mc config host add minio-local http://localhost:9000 AKIAIOSFODNN7EXAMPLE wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY S3v4</span><br><span class="line"></span><br><span class="line">  3. mc ls minio-local</span><br><span class="line"></span><br><span class="line">Alternately, you can use your browser or the Minio SDK to access the server - https://docs.minio.io/categories/17</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+<h4 id="访问验证"><a href="#访问验证" class="headerlink" title="访问验证"></a>访问验证</h4><p>添加hosts解析测试</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">192.168.1.200 minio.devops.svc.cluster.local</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://i.loli.net/2020/12/31/ZKhQuDB7yYHCtlU.png" alt="40.png"></p>
+<hr>
+<h4 id="创建bucket"><a href="#创建bucket" class="headerlink" title="创建bucket"></a>创建bucket</h4><p><img src="https://i.loli.net/2020/12/31/13w4PDqSHiQOgV5.png" alt="41.png"><br><img src="https://i.loli.net/2020/12/31/8FxMK4dB6UDiCLb.png" alt="42.png"><br><img src="https://i.loli.net/2020/12/31/1mobQTeSnlK9tp3.png" alt="43.png"></p>
+<hr>
+<h2 id="配置Runner使用S3存储"><a href="#配置Runner使用S3存储" class="headerlink" title="配置Runner使用S3存储"></a>配置Runner使用S3存储</h2><p>官方的runner 配置 examples是这样配置的，指定S3存储相关信息。</p>
+<p>参考文档：<a target="_blank" rel="noopener" href="https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching">https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching</a></p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[[runners]]</span><br><span class="line">  limit = 10</span><br><span class="line">  executor = "docker+machine"</span><br><span class="line">  [runners.cache]</span><br><span class="line">    Type = "s3"</span><br><span class="line">    Path = "path/to/prefix"</span><br><span class="line">    Shared = false</span><br><span class="line">    [runners.cache.s3]</span><br><span class="line">      ServerAddress = "s3.example.com"</span><br><span class="line">      AccessKey = "access-key"</span><br><span class="line">      SecretKey = "secret-key"</span><br><span class="line">      BucketName = "runner"</span><br><span class="line">      Insecure = false</span><br></pre></td></tr></tbody></table></figure>
+
+<p>如果您直接使用的vm或者docker安装的runner，可以直接更新runner的配置文件填写S3信息。如果您使用的是Kuberntes环境部署的runner则需要根据以下配置来修改Helm  chart。</p>
+<p>步骤1：创建一个secret保存S3的认证信息，由于我的runner在gitlab-runner名称空间，所以这里指定的也是同样的。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl create secret generic s3access --namespace=gitlab-runner --from-literal=accesskey="AKIAIOSFODNN7EXAMPLE" --from-literal=secretkey="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"</span><br></pre></td></tr></tbody></table></figure>
+
+<p>步骤2： 编辑helm chart 中的values.yml文件，填写S3配置信息。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">cache:</span><br><span class="line">    ## General settings</span><br><span class="line">    cacheType: s3</span><br><span class="line">    cachePath: "gitlab-runner"</span><br><span class="line">    cacheShared: true</span><br><span class="line"></span><br><span class="line">    ## S3 settings</span><br><span class="line">    s3ServerAddress: minio.devops.svc.cluster.local</span><br><span class="line">    s3BucketName: gitlab-ci-runner-cache</span><br><span class="line">    s3BucketLocation:</span><br><span class="line">    s3CacheInsecure: false</span><br><span class="line">    secretName: s3access</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>cacheType：  缓存的类型，指定s3</li>
+<li>cachePath：缓存路径，值得是bucket中的目录。可以自定义。</li>
+<li>CacheShared：是否共享，如果存在多个runner则需要开启。</li>
+<li>s3ServerAddress： S3服务器地址，minio域名。</li>
+<li>s3BucketName： S3 bucket的名称，参考上面我们创建的名称。</li>
+<li>s3BucketLocation： Location 默认即可，可选。</li>
+<li>s3CacheInsecure：是否使用https。(这里官方chart有问题，配置的是不管是true还是false都是true，后面会修改)</li>
+<li>secretName：凭据名称， 我们在上面创建的s3凭据。</li>
+</ul>
+<hr>
+<p>小问题： 发现s3CacheInsecure设置runner 配置 Insecure没有生效，解决方法。</p>
+<p>方式一： 声明环境变量（不生效，放弃）</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">--cache-s3-insecure       Use insecure mode (without https) [$CACHE_S3_INSECURE]</span><br></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">envVars:</span><br><span class="line">  - name: CACHE_S3_INSECURE</span><br><span class="line">    value: false</span><br></pre></td></tr></tbody></table></figure>
+
+<p>方式二：修改文件templates/_cache.tpl</p>
+<p>官方配置的是 这个值如果为true 则为true ，那如果我们要设置false呢？ 很明显没有配置了~~~。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">18 {{-       if .Values.runners.cache.s3CacheInsecure }}</span><br><span class="line">19 - name: CACHE_S3_INSECURE</span><br><span class="line">20   value: "true"</span><br><span class="line">21 {{-       end }}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>改成下面的配置，即不加条件判断，根据s3CacheInsecure 实际的参数值。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">- name: CACHE_S3_INSECURE</span><br><span class="line">  value: {{ default "" .Values.runners.cache.s3CacheInsecure | quote }}</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<hr>
+<p>ok，上面我们遇到了一些小问题，但都通过自定义helmchart 解决了。 接下来更新我们的runner 配置。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">helm upgrade gitlab-runner ./gitlab-runner --namespace gitlab-runner</span><br></pre></td></tr></tbody></table></figure>
+
+<p>更新完成，我们在pod中查看runner配置文件是否正常。大家可以参考以下图片为正常的。</p>
+<p><img src="https://i.loli.net/2020/12/31/ybW1XJEVm7lCaPQ.png" alt="39.png"></p>
+<hr>
+<h2 id="运行流水线测试"><a href="#运行流水线测试" class="headerlink" title="运行流水线测试"></a>运行流水线测试</h2><p>这条流水线很简单，我们这样配置： 设计两个步骤，build，test。 build打包后会产生target目录。默认在不配置全局缓存的情况下test作业执行的时候是没有target目录的。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">cache:</span><br><span class="line">  paths:</span><br><span class="line">    - target/</span><br><span class="line">build:</span><br><span class="line">  stage: build</span><br><span class="line">  script:</span><br><span class="line">    - mvn clean package</span><br><span class="line">    - ls </span><br><span class="line">    </span><br><span class="line">test:</span><br><span class="line">  stage: test</span><br><span class="line">  script:</span><br><span class="line">    - ls </span><br><span class="line">    - ls target/</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>build作业开始运行，获取缓存。发现缓存不存在，运行任务。</p>
+<p><img src="https://i.loli.net/2020/12/31/cHJDinaIhyFYWE2.png" alt="44.png"></p>
+<p>build作业执行完成，收集缓存到S3。</p>
+<p><img src="https://i.loli.net/2020/12/31/q9XCpPVRyYzeLoD.png" alt="45.png"></p>
+<p>test作业开始运行，发现build作业产生的缓存。</p>
+<p><img src="https://i.loli.net/2020/12/31/pxk6t7dQKY8lzvu.png" alt="46.png"></p>
+<p>test作业运行完成，上传缓存到S3。</p>
+<p><img src="https://i.loli.net/2020/12/31/ex3UQoAqtcODsTM.png" alt="47.png"></p>
+<hr>
+<p>OK，到这里S3缓存已经配置完成了。 我们可以在minio服务中查看生成的数据。</p>
+<p><img src="https://i.loli.net/2020/12/31/jDqWaALQkU3ISiG.png" alt="48.png"></p>
+<p><img src="https://i.loli.net/2020/12/31/KqbkcE2yrGIQM8X.png" alt="49.png"></p>
+<hr>
+<h2 id="FAQ"><a href="#FAQ" class="headerlink" title="FAQ"></a>FAQ</h2><p>连接超时问题，这个问题与runners 3CacheInsecure配置参数有关。可以参考上面步骤解决。使用http模式即可。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Restoring cache</span><br><span class="line"> Checking cache for default-1...</span><br><span class="line"> WARNING: Retrying...                                error=Get https://minio.devops.svc.cluster.local/gitlab-ci-runner-cache/gitlab-runner/project/20/default-1?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAIOSFODNN7EXAMPLE%2F20200516%2Fus-east-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20200516T061458Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=b604bdfdda3b26286e714ed3a4073c103f6216f13b4efb12a0c76734160b1fde: dial tcp 10.1.117.2:443: i/o timeout</span><br><span class="line"> WARNING: Retrying...                                error=Get https://minio.devops.svc.cluster.local/gitlab-ci-runner-cache/gitlab-runner/project/20/default-1?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAIOSFODNN7EXAMPLE%2F20200516%2Fus-east-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20200516T061458Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=b604bdfdda3b26286e714ed3a4073c103f6216f13b4efb12a0c76734160b1fde: dial tcp 10.1.117.2:443: i/o timeout</span><br><span class="line"> FATAL: Get https://minio.devops.svc.cluster.local/gitlab-ci-runner-cache/gitlab-runner/project/20/default-1?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=[FILTERED]&amp;X-Amz-Date=20200516T061458Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=[FILTERED] dial tcp 10.1.117.2:443: i/o timeout </span><br></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Lustudio</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2020/12/31/Gitlab%E5%AE%B9%E5%99%A8%E6%B5%81%E6%B0%B4%E7%BA%BF%E4%BC%98%E5%8C%96-%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8Minio%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8/">http://example.com/2020/12/31/Gitlab%E5%AE%B9%E5%99%A8%E6%B5%81%E6%B0%B4%E7%BA%BF%E4%BC%98%E5%8C%96-%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8Minio%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">Lustudio</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/gitlab/">gitlab</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/04/22/traefik2-1%E9%83%A8%E7%BD%B2/"><img class="prev-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">traefik2.x部署</div></div></a></div><div class="next-post pull-right"><a href="/2020/12/31/Gitlab%E5%AE%B9%E5%99%A8%E6%B5%81%E6%B0%B4%E7%BA%BF%E4%BC%98%E5%8C%96-%E6%B5%81%E6%B0%B4%E7%BA%BF%E6%9E%84%E5%BB%BA%E6%B6%88%E6%81%AF%E9%80%9A%E7%9F%A5/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Gitlab容器流水线优化-流水线构建消息通知</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2020/12/21/GitLab-Pipeline语法-pipline-syntax-2/" title="GitLab-Pipeline语法-pipline syntax-2"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-21</div><div class="title">GitLab-Pipeline语法-pipline syntax-2</div></div></a></div><div><a href="/2020/12/21/GitLab-Pipeline语法-pipline-syntax-1/" title="GitLab-Pipeline语法-pipline-syntax-1"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-21</div><div class="title">GitLab-Pipeline语法-pipline-syntax-1</div></div></a></div><div><a href="/2020/12/21/GitLab-Pipeline语法-pipline-syntax-4/" title="GitLab-Pipeline语法-pipline-syntax-4"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-21</div><div class="title">GitLab-Pipeline语法-pipline-syntax-4</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8%E5%88%86%E5%B8%83%E5%BC%8F%E7%BC%93%E5%AD%98"><span class="toc-number">1.</span> <span class="toc-text">配置使用分布式缓存</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#minio"><span class="toc-number">2.</span> <span class="toc-text">minio</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8EKubernetes%E9%83%A8%E7%BD%B2"><span class="toc-number">2.1.</span> <span class="toc-text">基于Kubernetes部署</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Helm-Install"><span class="toc-number">2.1.1.</span> <span class="toc-text">Helm Install</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BF%E9%97%AE%E9%AA%8C%E8%AF%81"><span class="toc-number">2.1.2.</span> <span class="toc-text">访问验证</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9B%E5%BB%BAbucket"><span class="toc-number">2.1.3.</span> <span class="toc-text">创建bucket</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AERunner%E4%BD%BF%E7%94%A8S3%E5%AD%98%E5%82%A8"><span class="toc-number">3.</span> <span class="toc-text">配置Runner使用S3存储</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C%E6%B5%81%E6%B0%B4%E7%BA%BF%E6%B5%8B%E8%AF%95"><span class="toc-number">4.</span> <span class="toc-text">运行流水线测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#FAQ"><span class="toc-number">5.</span> <span class="toc-text">FAQ</span></a></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021  <i id="heartbeat" class="fa fas fa-heartbeat"></i> Lustudio</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, welcome to my <a target="_blank" rel="noopener" href="https://butterfly.js.org/">blog</a>!</div></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/HCLonely/images@master/others/heartbeat.min.css"></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font-plus" type="button" title="放大字体"><i class="fas fa-plus"></i></button><button id="font-minus" type="button" title="缩小字体"><i class="fas fa-minus"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',preloader.endLoading())</script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

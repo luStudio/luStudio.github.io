@@ -1,0 +1,328 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>使用helm安装nfs动态存储卷 | Lustudio</title><meta name="keywords" content="kubernetes"><meta name="author" content="Lustudio"><meta name="copyright" content="Lustudio"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="创建 NFS 服务器NFS 允许系统将其目录和文件共享给网络上的其他系统。通过 NFS，用户和应用程序可以访问远程系统上的文件，就象它们是本地文件一样。 安装nfs-utils 在集群每一个节点安装nfs-utils  1yum -y install nfs-utils rpcbind  配置nfs-server 创建共享目录  1mkdir -p &#x2F;data&#x2F;nfs    编辑&#x2F;etc&#x2F;expo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用helm安装nfs动态存储卷">
+<meta property="og:url" content="http://example.com/2020/12/21/%E4%BD%BF%E7%94%A8helm%E5%AE%89%E8%A3%85nfs%E5%8A%A8%E6%80%81%E5%AD%98%E5%82%A8%E5%8D%B7/index.html">
+<meta property="og:site_name" content="Lustudio">
+<meta property="og:description" content="创建 NFS 服务器NFS 允许系统将其目录和文件共享给网络上的其他系统。通过 NFS，用户和应用程序可以访问远程系统上的文件，就象它们是本地文件一样。 安装nfs-utils 在集群每一个节点安装nfs-utils  1yum -y install nfs-utils rpcbind  配置nfs-server 创建共享目录  1mkdir -p &#x2F;data&#x2F;nfs    编辑&#x2F;etc&#x2F;expo">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2020-12-21T03:40:48.000Z">
+<meta property="article:modified_time" content="2021-04-16T05:54:32.000Z">
+<meta property="article:author" content="Lustudio">
+<meta property="article:tag" content="kubernetes">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2020/12/21/%E4%BD%BF%E7%94%A8helm%E5%AE%89%E8%A3%85nfs%E5%8A%A8%E6%80%81%E5%AD%98%E5%82%A8%E5%8D%B7/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":300},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'mediumZoom',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '使用helm安装nfs动态存储卷',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-04-16 13:54:32'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const fontSizeVal = saveToLocal.get('global-font-size')
+    if (fontSizeVal !== undefined) {
+      document.documentElement.style.setProperty('--global-font-size', fontSizeVal + 'px')
+    }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQae-91xlO6GYrOzk-6P_ZgTFMVDGq7tliWjw&amp;usqp=CAU" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">69</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">18</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">18</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Lustudio</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">使用helm安装nfs动态存储卷</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-12-21T03:40:48.000Z" title="发表于 2020-12-21 11:40:48">2020-12-21</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-04-16T05:54:32.000Z" title="更新于 2021-04-16 13:54:32">2021-04-16</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/kubernetes/">kubernetes</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="使用helm安装nfs动态存储卷"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="创建-NFS-服务器"><a href="#创建-NFS-服务器" class="headerlink" title="创建 NFS 服务器"></a>创建 NFS 服务器</h1><p>NFS 允许系统将其目录和文件共享给网络上的其他系统。通过 NFS，用户和应用程序可以访问远程系统上的文件，就象它们是本地文件一样。</p>
+<h2 id="安装nfs-utils"><a href="#安装nfs-utils" class="headerlink" title="安装nfs-utils"></a>安装nfs-utils</h2><ul>
+<li>在集群每一个节点安装<code>nfs-utils</code></li>
+</ul>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install nfs-utils rpcbind</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="配置nfs-server"><a href="#配置nfs-server" class="headerlink" title="配置nfs-server"></a>配置nfs-server</h2><ul>
+<li>创建共享目录</li>
+</ul>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /data/nfs</span><br></pre></td></tr></tbody></table></figure>
+
+
+<ul>
+<li>编辑<code>/etc/exports</code>文件添加需要共享目录，每个目录的设置独占一行，编写格式如下：</li>
+</ul>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NFS共享目录路径 客户机IP段(参数1,参数2,...,参数n)</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>例如：</li>
+</ul>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/data *(insecure,rw,async,no_root_squash) </span><br></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+
+<table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">ro</td>
+<td align="center">只读访问</td>
+</tr>
+<tr>
+<td align="left">rw</td>
+<td align="center">读写访问</td>
+</tr>
+<tr>
+<td align="left">sync</td>
+<td align="center">所有数据在请求时写入共享</td>
+</tr>
+<tr>
+<td align="left">async</td>
+<td align="center">nfs在写入数据前可以响应请求</td>
+</tr>
+<tr>
+<td align="left">secure</td>
+<td align="center">nfs通过1024以下的安全TCP/IP端口发送</td>
+</tr>
+<tr>
+<td align="left">insecure</td>
+<td align="center">nfs通过1024以上的端口发送</td>
+</tr>
+<tr>
+<td align="left">wdelay</td>
+<td align="center">如果多个用户要写入nfs目录，则归组写入（默认）</td>
+</tr>
+<tr>
+<td align="left">no_wdelay</td>
+<td align="center">如果多个用户要写入nfs目录，则立即写入，当使用async时，无需此设置</td>
+</tr>
+<tr>
+<td align="left">hide</td>
+<td align="center">在nfs共享目录中不共享其子目录</td>
+</tr>
+<tr>
+<td align="left">no_hide</td>
+<td align="center">共享nfs目录的子目录</td>
+</tr>
+<tr>
+<td align="left">subtree_check</td>
+<td align="center">如果共享/usr/bin之类的子目录时，强制nfs检查父目录的权限（默认）</td>
+</tr>
+<tr>
+<td align="left">no_subtree_check</td>
+<td align="center">不检查父目录权限</td>
+</tr>
+<tr>
+<td align="left">all_squash</td>
+<td align="center">共享文件的UID和GID映射匿名用户anonymous，适合公用目录</td>
+</tr>
+<tr>
+<td align="left">no_all_squash</td>
+<td align="center">保留共享文件的UID和GID（默认）</td>
+</tr>
+<tr>
+<td align="left">root_squash</td>
+<td align="center">root用户的所有请求映射成如anonymous用户一样的权限（默认）</td>
+</tr>
+<tr>
+<td align="left">no_root_squash</td>
+<td align="center">root用户具有根目录的完全管理访问权限</td>
+</tr>
+<tr>
+<td align="left">anonuid=xxx</td>
+<td align="center">指定nfs服务器/etc/passwd文件中匿名用户的UID</td>
+</tr>
+<tr>
+<td align="left">anongid=xxx</td>
+<td align="center">指定nfs服务器/etc/passwd文件中匿名用户的GID</td>
+</tr>
+</tbody></table>
+<ul>
+<li>注1：尽量指定IP段最小化授权可以访问NFS 挂载的资源的客户端</li>
+<li>注2：经测试参数insecure必须要加，否则客户端挂载出错mount.nfs: access denied by server while mounting</li>
+</ul>
+<h2 id="启动NFS服务"><a href="#启动NFS服务" class="headerlink" title="启动NFS服务"></a>启动NFS服务</h2><ul>
+<li>配置完成后，您可以在终端提示符后运行以下命令来启动 NFS 服务器：</li>
+</ul>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl enable nfs-server rpcbind &amp;&amp; systemctl start nfs-server rpcbind</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="检查NFS服务提供是否正常"><a href="#检查NFS服务提供是否正常" class="headerlink" title="检查NFS服务提供是否正常"></a>检查NFS服务提供是否正常</h2><ul>
+<li>到客户机上执行showmount命令进行检查</li>
+</ul>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ showmount -e &lt;NFS服务器IP地址&gt;</span><br><span class="line">Exports list on &lt;NFS服务器IP地址&gt;:</span><br><span class="line">/u01</span><br></pre></td></tr></tbody></table></figure>
+
+<h1 id="安装-nfs-client-provisioner"><a href="#安装-nfs-client-provisioner" class="headerlink" title="安装 nfs-client-provisioner"></a>安装 nfs-client-provisioner</h1><h2 id="添加choerodon-chart仓库"><a href="#添加choerodon-chart仓库" class="headerlink" title="添加choerodon chart仓库"></a>添加choerodon chart仓库</h2><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">helm repo add c7n https://openchart.choerodon.com.cn/choerodon/c7n/</span><br><span class="line">helm repo update</span><br></pre></td></tr></tbody></table></figure>
+
+<p>在任意一个master节点执行下面helm命令，安装<code>nfs-client-provisioner</code></p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">helm upgrade --install nfs-client-provisioner c7n/nfs-client-provisioner \</span><br><span class="line">    --set rbac.create=true \</span><br><span class="line">    --set persistence.enabled=true \</span><br><span class="line">    --set storageClass.name=nfs-provisioner \</span><br><span class="line">    --set persistence.nfsServer=192.168.0.46 \</span><br><span class="line">    --set persistence.nfsPath=/data/nfs \</span><br><span class="line">    --namespace kube-system</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li><p>提供NFS服务的主机IP地址或域名</p>
+</li>
+<li><p>NFS服务共享的目录</p>
+</li>
+</ul>
+<h2 id="验证安装"><a href="#验证安装" class="headerlink" title="验证安装"></a>验证安装</h2><ul>
+<li>新建<code>write-pod.yaml</code>文件，粘贴以下内容：</li>
+</ul>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">kind: Pod</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  name: write-pod</span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">  - name: write-pod</span><br><span class="line">    image: busybox</span><br><span class="line">    command:</span><br><span class="line">      - "/bin/sh"</span><br><span class="line">    args:</span><br><span class="line">      - "-c"</span><br><span class="line">      - "touch /mnt/SUCCESS &amp;&amp; exit 0 || exit 1"</span><br><span class="line">    volumeMounts:</span><br><span class="line">      - name: nfs-pvc</span><br><span class="line">        mountPath: "/mnt"</span><br><span class="line">  restartPolicy: "Never"</span><br><span class="line">  volumes:</span><br><span class="line">    - name: nfs-pvc</span><br><span class="line">      persistentVolumeClaim:</span><br><span class="line">        claimName: myclaim</span><br><span class="line">---</span><br><span class="line">kind: PersistentVolumeClaim</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  name: myclaim</span><br><span class="line">spec:</span><br><span class="line">  accessModes:</span><br><span class="line">    - ReadWriteOnce</span><br><span class="line">  storageClassName: nfs-provisioner</span><br><span class="line">  resources:</span><br><span class="line">    requests:</span><br><span class="line">      storage: 1Mi</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>部署测试用例</li>
+</ul>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f write-pod.yaml</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>验证是否正常</li>
+</ul>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl get po</span><br><span class="line">NAME                            READY     STATUS      RESTARTS   AGE</span><br><span class="line">write-pod                       0/1       Completed   0          8s</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li><p>pod状态为<code>Completed</code>则为正常，若长时间为<code>ContainerCreating</code>状态则为不正常，请确认安装操作步骤是否正确。</p>
+</li>
+<li><p>清除测试</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl delete -f write-pod.yaml</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>设置默认strorageclass</li>
+</ul>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl patch storageclass nfs-provisioner -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'</span><br></pre></td></tr></tbody></table></figure>
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Lustudio</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2020/12/21/%E4%BD%BF%E7%94%A8helm%E5%AE%89%E8%A3%85nfs%E5%8A%A8%E6%80%81%E5%AD%98%E5%82%A8%E5%8D%B7/">http://example.com/2020/12/21/%E4%BD%BF%E7%94%A8helm%E5%AE%89%E8%A3%85nfs%E5%8A%A8%E6%80%81%E5%AD%98%E5%82%A8%E5%8D%B7/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">Lustudio</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/kubernetes/">kubernetes</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/12/21/%E4%BD%BF%E7%94%A8kubeadm%E9%83%A8%E7%BD%B2k8s%E9%9B%86%E7%BE%A4/"><img class="prev-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">使用kubeadm部署k8s集群</div></div></a></div><div class="next-post pull-right"><a href="/2020/12/21/%E4%BD%BF%E7%94%A8%20Sealos%20+%20Longhorn%20%E9%83%A8%E7%BD%B2%20KubeSphere%20v3.0.0/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">使用 Sealos + Longhorn 部署 KubeSphere v3.0.0</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2020/12/21/kubeadm更新证书时间/" title="kubeadm更新证书时间"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-21</div><div class="title">kubeadm更新证书时间</div></div></a></div><div><a href="/2020/12/21/kubernetes解决容器数据写满磁盘/" title="kubernetes解决容器数据写满磁盘"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-21</div><div class="title">kubernetes解决容器数据写满磁盘</div></div></a></div><div><a href="/2021/04/22/traefik2-1部署/" title="traefik2.x部署"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-04-22</div><div class="title">traefik2.x部署</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA-NFS-%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-number">1.</span> <span class="toc-text">创建 NFS 服务器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85nfs-utils"><span class="toc-number">1.1.</span> <span class="toc-text">安装nfs-utils</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEnfs-server"><span class="toc-number">1.2.</span> <span class="toc-text">配置nfs-server</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8NFS%E6%9C%8D%E5%8A%A1"><span class="toc-number">1.3.</span> <span class="toc-text">启动NFS服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A3%80%E6%9F%A5NFS%E6%9C%8D%E5%8A%A1%E6%8F%90%E4%BE%9B%E6%98%AF%E5%90%A6%E6%AD%A3%E5%B8%B8"><span class="toc-number">1.4.</span> <span class="toc-text">检查NFS服务提供是否正常</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-nfs-client-provisioner"><span class="toc-number">2.</span> <span class="toc-text">安装 nfs-client-provisioner</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0choerodon-chart%E4%BB%93%E5%BA%93"><span class="toc-number">2.1.</span> <span class="toc-text">添加choerodon chart仓库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%AA%8C%E8%AF%81%E5%AE%89%E8%A3%85"><span class="toc-number">2.2.</span> <span class="toc-text">验证安装</span></a></li></ol></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021  <i id="heartbeat" class="fa fas fa-heartbeat"></i> Lustudio</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, welcome to my <a target="_blank" rel="noopener" href="https://butterfly.js.org/">blog</a>!</div></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/HCLonely/images@master/others/heartbeat.min.css"></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font-plus" type="button" title="放大字体"><i class="fas fa-plus"></i></button><button id="font-minus" type="button" title="缩小字体"><i class="fas fa-minus"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',preloader.endLoading())</script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

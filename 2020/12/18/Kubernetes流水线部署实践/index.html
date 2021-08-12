@@ -1,0 +1,390 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>6.Kubernetes流水线部署实践 | Lustudio</title><meta name="keywords" content="Spinnaker"><meta name="author" content="Lustudio"><meta name="copyright" content="Lustudio"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="1. 参数话Mainfest 对部署清单进行参数化spinnaker  Pipline  支持参数化构建，可以将构建参数传递到资源清单中  添加流水线构建参数   添加两个参数： namespace和image 对应部署文件中的名称空间和部署镜像       添加部署阶段123456789获取构建参数namespace&#39;${ parameters.namespace }&#39;获取构建参数image&#39;$">
+<meta property="og:type" content="article">
+<meta property="og:title" content="6.Kubernetes流水线部署实践">
+<meta property="og:url" content="http://example.com/2020/12/18/Kubernetes%E6%B5%81%E6%B0%B4%E7%BA%BF%E9%83%A8%E7%BD%B2%E5%AE%9E%E8%B7%B5/index.html">
+<meta property="og:site_name" content="Lustudio">
+<meta property="og:description" content="1. 参数话Mainfest 对部署清单进行参数化spinnaker  Pipline  支持参数化构建，可以将构建参数传递到资源清单中  添加流水线构建参数   添加两个参数： namespace和image 对应部署文件中的名称空间和部署镜像       添加部署阶段123456789获取构建参数namespace&#39;${ parameters.namespace }&#39;获取构建参数image&#39;$">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2020-12-18T09:56:02.000Z">
+<meta property="article:modified_time" content="2021-04-16T05:56:24.000Z">
+<meta property="article:author" content="Lustudio">
+<meta property="article:tag" content="Spinnaker">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2020/12/18/Kubernetes%E6%B5%81%E6%B0%B4%E7%BA%BF%E9%83%A8%E7%BD%B2%E5%AE%9E%E8%B7%B5/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":300},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'mediumZoom',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '6.Kubernetes流水线部署实践',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-04-16 13:56:24'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const fontSizeVal = saveToLocal.get('global-font-size')
+    if (fontSizeVal !== undefined) {
+      document.documentElement.style.setProperty('--global-font-size', fontSizeVal + 'px')
+    }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQae-91xlO6GYrOzk-6P_ZgTFMVDGq7tliWjw&amp;usqp=CAU" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">69</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">18</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">18</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Lustudio</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">6.Kubernetes流水线部署实践</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-12-18T09:56:02.000Z" title="发表于 2020-12-18 17:56:02">2020-12-18</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-04-16T05:56:24.000Z" title="更新于 2021-04-16 13:56:24">2021-04-16</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Spinnaker/">Spinnaker</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="6.Kubernetes流水线部署实践"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="1-参数话Mainfest"><a href="#1-参数话Mainfest" class="headerlink" title="1. 参数话Mainfest"></a>1. 参数话Mainfest</h2><ul>
+<li>对部署清单进行参数化<br>spinnaker  Pipline  支持参数化构建，可以将构建参数传递到资源清单中<br><img src="https://i.loli.net/2020/12/18/VEMFRqguys9Can4.png" alt="微信截图_20201218095636.png"></li>
+<li><ol>
+<li>添加流水线构建参数</li>
+</ol>
+<ul>
+<li>添加两个参数： namespace和image 对应部署文件中的名称空间和部署镜像</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/18/EGepBtQFPrJMfkg.png" alt="微信截图_20201218095847.png"></p>
+<ul>
+<li><ol start="2">
+<li>添加部署阶段<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">获取构建参数namespace</span><br><span class="line"></span><br><span class="line">'${ parameters.namespace }'</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">获取构建参数image</span><br><span class="line"></span><br><span class="line">'${ parameters.image }'</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure></li>
+</ol>
+</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/18/mihNe64oKGgEcjv.png" alt="微信截图_20201218100022.png"></p>
+<ul>
+<li><ol start="3">
+<li>构建测试</li>
+</ol>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">构建参数namespace</span><br><span class="line"></span><br><span class="line">demo-stag</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">构建参数image</span><br><span class="line"></span><br><span class="line">nginx:1.16.0</span><br></pre></td></tr></tbody></table></figure>
+
+
+<p><img src="https://i.loli.net/2020/12/18/8sG6JCBvEV7Dnfm.png" alt="微信截图_20201218100136.png"></p>
+<ul>
+<li><ol start="4">
+<li>扩展<br>当参数化不是字符串的YAML值时（例如副本数），需要显式将求值表达式转换类型。<br>例如：期望副本数到达parameter中replicas，则应编写：</li>
+</ol>
+</li>
+</ul>
+<h2 id="2-发布Helm-Charts"><a href="#2-发布Helm-Charts" class="headerlink" title="2. 发布Helm Charts"></a>2. 发布Helm Charts</h2><ul>
+<li><p>Spinnaker 通过 Bake（manifest）阶段，将模板引擎转换为清单。</p>
+</li>
+<li><p>Spinnaker仅将Helm用于模板制作，而不使用分其来进行部署，进行kubectl应用</p>
+</li>
+<li><p>1.1. Bake(mainfest)阶段配置-指定渲染引擎和选项</p>
+</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/18/PWs5mGOUXa8i9CY.png" alt="微信截图_20201218100556.png"></p>
+<ul>
+<li>1.2.Bake(mainfest)阶段配置-选择chart包（tgz）</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/18/TjhHzKWuYk3VQor.png" alt="微信截图_20201218100733.png"></p>
+<ul>
+<li>1.3. Bake(mainfest)阶段配置-覆盖values文件<ul>
+<li>在这里我们将传递一个Values文件</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/18/WQdIlxj82Bcgrqn.png" alt="微信截图_20201218100828.png"></p>
+<ul>
+<li>1.4. Bake(mainfest)阶段配置-生成制品<ul>
+<li>在此阶段产生的制品将是模板化之后的Kubernetes资源对象定义。</li>
+</ul>
+</li>
+<li>Deploy(mainfest)阶段配置-选择上阶段制品</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/18/5snfMHh7rgICK2t.png" alt="微信截图_20201218102404.png"></p>
+<h2 id="3-配置应用回滚"><a href="#3-配置应用回滚" class="headerlink" title="3. 配置应用回滚"></a>3. 配置应用回滚</h2><ul>
+<li>当我们在部署应用的时候因功能或运行错误导致环境不可用或不是我们所期望的，进行回滚很有必要。回滚我们可以通过在页面触发临时回滚，也可以添加自动回滚阶段到流水线。</li>
+<li>使用Deployment对象时，可以在“群集”选项卡中看到历史记录：</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/18/DVYEqGc5ZXoJQKB.png" alt="微信截图_20201218102727.png"></p>
+<ul>
+<li><ol>
+<li>临时回滚<br>选中ServerGroup -&gt; Deployments actions -&gt; Undo Rollout -&gt; 选择版本</li>
+</ol>
+</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/18/wdSMnEUa3xj6ymL.png" alt="微信截图_20201218102836.png"></p>
+<ul>
+<li><ol start="2">
+<li>自动回滚<br>添加阶段 -&gt; Undo Rollout(Mainfest)</li>
+</ol>
+</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/18/qdCRsjWnX5hZaGI.png" alt="微信截图_20201218102950.png"></p>
+<ul>
+<li>实例：人工确认后执行回滚<br>添加阶段 -&gt; Manual Judgment<br>${ execution[‘stages’][1].context.judgmentInput == “rollback” }</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/18/Arkmu2WhpxCLOU4.png" alt="微信截图_20201218103050.png"></p>
+<h1 id="流水线进阶部分"><a href="#流水线进阶部分" class="headerlink" title="流水线进阶部分"></a>流水线进阶部分</h1><h2 id="1-管道表达式"><a href="#1-管道表达式" class="headerlink" title="1. 管道表达式"></a>1. 管道表达式</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><ul>
+<li>管道表达式可以在管道执行期间进行参数动态设置和访问变量。</li>
+<li>可以在Spinnaker管道阶段的几乎所有文本字段中使用表达式。</li>
+<li>管道表达式可帮助您在管道执行过程中使用有关系统状态的任意值。</li>
+<li>您可以使用它们来打开或关闭管道的特定阶段，动态命名堆栈，检查另一阶段的状态以及执行其他操作。</li>
+<li>${expression here}<br><a href="%E6%98%BE%E7%A4%BA%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8%EF%BC%9AShift%EF%BC%8CCommand%EF%BC%8CAlt%EF%BC%8CControl">^</a>: 注意：管道表达式语法基于SpringExpression Language（SpEL）</li>
+</ul>
+<h3 id="管道工具-Functions-函数"><a href="#管道工具-Functions-函数" class="headerlink" title="管道工具-Functions - 函数"></a>管道工具-Functions - 函数</h3><ul>
+<li>在管道表达式中输入 “#”号，可以显示所有可用的辅助函数。</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/18/9ZRktHUMOsBW2xf.png" alt="微信截图_20201218112210.png"></p>
+<h3 id="管道工具-Properrties-属性"><a href="#管道工具-Properrties-属性" class="headerlink" title="管道工具-Properrties-属性"></a>管道工具-Properrties-属性</h3><ul>
+<li>辅助属性是变量，可以引用有关当前管道执行的全局信息。<ul>
+<li>execution 引用当前的管道执行信息。</li>
+<li>trigger 访问有关管道触发器的信息。例如，如果您已经设置了Jenkins触发器，并且想知哪个构建触发了当前管道，则可以使用表达式访问该信息${trigger[“buildInfo”][“number”]}。</li>
+</ul>
+</li>
+<li>要快速列出可用的辅助属性，可以在管道表达式中输入问号。显示列表后，您可以开始键入以缩小列表的范围，或按Enter键将选定的属性添加到表达式中。</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/18/DN2aizIZyuEWGXk.png" alt="微信截图_20201218112617.png"></p>
+<h3 id="管道工具-Property-file-属性文件"><a href="#管道工具-Property-file-属性文件" class="headerlink" title="管道工具-Property file-属性文件"></a>管道工具-Property file-属性文件</h3><ul>
+<li>将Jenkins作业属性传递到管道。文件类型可以是YAML或者JSON</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/18/XqQ1fSCcvoW9MYK.png" alt="微信截图_20201218112800.png"></p>
+<h3 id="流水线数据"><a href="#流水线数据" class="headerlink" title="流水线数据"></a>流水线数据</h3><p><img src="https://i.loli.net/2020/12/18/ehUJb24l7OgdBry.png" alt="微信截图_20201218112951.png"></p>
+<h3 id="测试表达式"><a href="#测试表达式" class="headerlink" title="测试表达式"></a>测试表达式</h3><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">PIPELINE_ID=01EJZRFMY5W66832SJRR5WH354</span><br><span class="line">curl http://spin-gate.idevops.site/pipelines/$PIPELINE_ID/evaluateExpression \</span><br><span class="line">       -H "Content-Type: text/plain" \</span><br><span class="line">       -H 'cookie: SESSION=YjNjZmE5MWMtYmY1NS00NWVlLWE0NjQtOTM3MTJhYWJlZDJj' \</span><br><span class="line">       --data '${ #stage("Deploy").status.toString() }'</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+<h3 id="语法：-调用Java方法"><a href="#语法：-调用Java方法" class="headerlink" title="语法： 调用Java方法"></a>语法： 调用Java方法</h3><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">${parameters.regions.split(",")}</span><br><span class="line">${new java.text.SimpleDateFormat("MM-dd-yyyy").format(new java.util.Date())}</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://i.loli.net/2020/12/18/3Ck51qb4AG7VJar.png" alt="微信截图_20201218113224.png"></p>
+<h3 id="语法：-Comparisons-比较"><a href="#语法：-Comparisons-比较" class="headerlink" title="语法： Comparisons 比较"></a>语法： Comparisons 比较</h3><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">${instance[“size”] &gt; 400}   ## 数值</span><br><span class="line">${parameters[“runCanary”] == “true”}   ## 字符串</span><br><span class="line">${#toBoolean(parameters[“runCanary”]) == true}   ## 布尔值</span><br><span class="line">${#stage(“Deploy”)[“status”].toString() == “SUCCEEDED”}  ## 字符串比较</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+
+<p><img src="https://i.loli.net/2020/12/18/wmd7Gaxirfn64lz.png" alt="微信截图_20201218113318.png"></p>
+<h3 id="语法：-Functions-方法"><a href="#语法：-Functions-方法" class="headerlink" title="语法： Functions 方法"></a>语法： Functions 方法</h3><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#readJson(String)      将json字符串转换为map</span><br><span class="line">#readYaml（String） 	   将yaml字符串转换为map</span><br><span class="line">#stage（String）        获取指定阶段</span><br><span class="line">#currentStage（）       获取当前阶段</span><br><span class="line">#stageExists（String）  阶段是否存在</span><br><span class="line">#pipelineId（String）   返回流水线ID</span><br><span class="line">#toBoolean（String）    转换为布尔值</span><br><span class="line">#toFloat（String）      转换为浮点数</span><br><span class="line">#toInt（String）	   转换为整数</span><br></pre></td></tr></tbody></table></figure>
+<p><img src="https://i.loli.net/2020/12/18/LQ9VZzKtcj8GvMh.png" alt="微信截图_20201218113428.png"></p>
+<h1 id="2-蓝绿部署"><a href="#2-蓝绿部署" class="headerlink" title="2. 蓝绿部署"></a>2. 蓝绿部署</h1><ul>
+<li>Kubernetes本身不支持蓝/绿部署策略。要实现必须使用不同的名称创建一个新的Deployment，然后管理外部的Service流量。手动删除较旧的部署。</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/18/cQ2qzaCxSJ7sMGB.png" alt="微信截图_20201218113714.png"></p>
+<h2 id="Spinnaker蓝绿部署"><a href="#Spinnaker蓝绿部署" class="headerlink" title="Spinnaker蓝绿部署"></a>Spinnaker蓝绿部署</h2><ul>
+<li>需要一个Service，该Service将使用与副本集选择器不匹配的选择器将流量路由到Pod。</li>
+<li>基于副本集（ReplicaSet）部署，以使生命周期易于管理。</li>
+<li>使用注释（annotations）流量管理自动化。</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/18/8AkYai3BdnrM6QI.png" alt="微信截图_20201218133215.png"></p>
+<h3 id="实验-1-创建LB（Service）"><a href="#实验-1-创建LB（Service）" class="headerlink" title="实验-1.创建LB（Service）"></a>实验-1.创建LB（Service）</h3><ul>
+<li>Service选择器与副本集容器的标签不匹配。这很重要，因为Spinnaker禁用副本集时，它会通过从副本集中删除服务的选择器来将副本集从服务的流量路径中删除。</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/18/xdpYcrN1uilPs64.png" alt="微信截图_20201218133348.png"></p>
+<h3 id="实验-2-创建Deploy（manifest）"><a href="#实验-2-创建Deploy（manifest）" class="headerlink" title="实验-2.创建Deploy（manifest）"></a>实验-2.创建Deploy（manifest）</h3><ul>
+<li>添加Deploy阶段，输入ReplicaSet</li>
+</ul>
+<p>![微信截图_20201218133447.png](<a target="_blank" rel="noopener" href="https://i.loli.net/2020/12/18/u3UnrpKJl59w1DR.png">https://i.loli.net/2020/12/18/u3UnrpKJl59w1DR.png</a></p>
+<h3 id="实验-3-设置Rollout-Strategy"><a href="#实验-3-设置Rollout-Strategy" class="headerlink" title="实验-3.设置Rollout Strategy"></a>实验-3.设置Rollout Strategy</h3><ul>
+<li>选择名称空间、服务名称、红黑部署策略。</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/18/4UZxbylhItMRX3v.png" alt="微信截图_20201218133605.png"></p>
+<h3 id="实验-4-手动运行流水线"><a href="#实验-4-手动运行流水线" class="headerlink" title="实验-4.手动运行流水线"></a>实验-4.手动运行流水线</h3><p><img src="https://i.loli.net/2020/12/18/NBmz7IoAWZ8n9kG.png" alt="微信截图_20201218133733.png"></p>
+<h3 id="实验-5-效果"><a href="#实验-5-效果" class="headerlink" title="实验-5.效果"></a>实验-5.效果</h3><p><img src="https://i.loli.net/2020/12/18/8jylvN5VFku47To.png" alt="微信截图_20201218133817.png"></p>
+<h3 id="实验-FAQ-存在多个历史版本"><a href="#实验-FAQ-存在多个历史版本" class="headerlink" title="实验-FAQ-存在多个历史版本"></a>实验-FAQ-存在多个历史版本</h3><p><img src="https://i.loli.net/2020/12/18/TVYcZqx6vWRXiQt.png" alt="微信截图_20201218133920.png"></p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">strategy.spinnaker.io/max-version-history: ‘2’   （添加到流水线的ReplicaSet中）</span><br><span class="line">指定要保留的部署版本数。在这种情况下，最多将存在两个部署，并且所有较旧的部署都将被删除。</span><br></pre></td></tr></tbody></table></figure>
+
+<h1 id="金丝雀部署"><a href="#金丝雀部署" class="headerlink" title="金丝雀部署"></a>金丝雀部署</h1><h2 id="什么是金丝雀部署"><a href="#什么是金丝雀部署" class="headerlink" title="什么是金丝雀部署"></a>什么是金丝雀部署</h2><p>金丝雀部署是将发行版发布到一部分用户或服务器的一种模式。这个想法是首先将更改部署到一小部分服务器，进行测试，然后将更改推广到其余服务器。一旦通过所有运行状况检查，当没有问题时，所有的客户将被路由到该应用程序的新版本，而旧版本将被删除。</p>
+<p><img src="https://i.loli.net/2020/12/18/mLWnPov4XIQROi1.png" alt="微信截图_20201218134109.png"></p>
+<ul>
+<li>1.部署Prometheus(对Kubernetes集群监控)</li>
+<li>2.开启Spinnaker对canary支持</li>
+<li>3.创建Canary Config文件（指定指标数据）</li>
+<li>4.配置金丝雀流水线，添加金丝雀分析步骤。</li>
+</ul>
+<h2 id="开启金丝雀支持"><a href="#开启金丝雀支持" class="headerlink" title="开启金丝雀支持"></a>开启金丝雀支持</h2><h3 id="实验-1-1开启Canary支持-配置存储"><a href="#实验-1-1开启Canary支持-配置存储" class="headerlink" title="实验-1.1开启Canary支持-配置存储"></a>实验-1.1开启Canary支持-配置存储</h3><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">hal config canary enable </span><br><span class="line"></span><br><span class="line">##aws s3  minio 创建一个bucket spinnaker-canary，赋予读写权限。</span><br><span class="line">hal config canary aws enable</span><br><span class="line">hal config canary aws account add my-canary  \</span><br><span class="line">--bucket spinnaker-canary \</span><br><span class="line">--endpoint http://minio.idevops.site \</span><br><span class="line">--access-key-id AKIAIOSFODNN7EXAMPLE \</span><br><span class="line">--secret-access-key wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY </span><br><span class="line"></span><br><span class="line">hal config canary edit --default-storage-account my-canary</span><br><span class="line">hal config canary aws edit --s3-enabled true</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="实验-1-2-开启Canary支持-配置Prometheus"><a href="#实验-1-2-开启Canary支持-配置Prometheus" class="headerlink" title="实验-1.2 开启Canary支持-配置Prometheus"></a>实验-1.2 开启Canary支持-配置Prometheus</h3><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">## prometheus</span><br><span class="line">hal config canary prometheus enable</span><br><span class="line"></span><br><span class="line">## 这里做了basic认证,无认证忽略username和password选项。</span><br><span class="line">hal config canary prometheus account add my-prometheus \</span><br><span class="line">--base-url http://prometheus.idevops.site \</span><br><span class="line">--username admin \</span><br><span class="line">--password admin </span><br><span class="line"></span><br><span class="line">hal config canary edit --default-metrics-account my-prometheus</span><br><span class="line">hal config canary edit --default-metrics-store prometheus</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="实验-1-3-应用开启金丝雀功能"><a href="#实验-1-3-应用开启金丝雀功能" class="headerlink" title="实验-1.3 应用开启金丝雀功能"></a>实验-1.3 应用开启金丝雀功能</h3><p><img src="https://i.loli.net/2020/12/18/TEiJR9VgkGNCumz.png" alt="微信截图_20201218134433.png"></p>
+<h2 id="创建金丝雀配置文件"><a href="#创建金丝雀配置文件" class="headerlink" title="创建金丝雀配置文件"></a>创建金丝雀配置文件</h2><h3 id="实验-2-1-金丝雀配置-创建金丝雀配置文件"><a href="#实验-2-1-金丝雀配置-创建金丝雀配置文件" class="headerlink" title="实验-2.1 金丝雀配置-创建金丝雀配置文件"></a>实验-2.1 金丝雀配置-创建金丝雀配置文件</h3><ul>
+<li>支持canary的每个应用程序，可以创建一个或多个配置。</li>
+<li>默认情况下，创建的所有canary配置对所有应用程序都是可见的。</li>
+</ul>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hal config canary edit --show-all-configs-enabled false   ## 改变可见范围</span><br></pre></td></tr></tbody></table></figure>
+<p><img src="https://i.loli.net/2020/12/18/X8PUQkSZeyR7s6z.png" alt="微信截图_20201218134707.png"></p>
+<h3 id="实验-2-2-1-金丝雀配置-添加指标"><a href="#实验-2-2-1-金丝雀配置-添加指标" class="headerlink" title="实验-2.2.1 金丝雀配置-添加指标"></a>实验-2.2.1 金丝雀配置-添加指标</h3><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">container_memory_usage_bytes{pod=“nginxdemo-76d4986777-v4lbg”}  ##prometheus查询表达式</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://i.loli.net/2020/12/18/n1oYdpZcOwxvgNC.png" alt="微信截图_20201218134900.png"></p>
+<h3 id="实验-2-2-2-金丝雀配置-添加指标"><a href="#实验-2-2-2-金丝雀配置-添加指标" class="headerlink" title="实验-2.2.2 金丝雀配置-添加指标"></a>实验-2.2.2 金丝雀配置-添加指标</h3><ul>
+<li>ResourceType： 选择 gce_instance。 </li>
+<li>Metric Name： 输入指标名称，自动检索。</li>
+<li>FilterTemplate: 过滤模板，等同于Prometheus的标签值过滤</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/18/tDla7npgKRhQHJ5.png" alt="微信截图_20201218135529.png"></p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">container_memory_usage_bytes{pod=“nginxdemo-76d4986777-v4lbg”}</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="实验-2-3-金丝雀配置-创建指标组"><a href="#实验-2-3-金丝雀配置-创建指标组" class="headerlink" title="实验-2.3 金丝雀配置-创建指标组"></a>实验-2.3 金丝雀配置-创建指标组</h3><ul>
+<li>指标组：默认存在Group1，可以添加指标组。 一个指标组可以包含一系列的指标。 </li>
+<li>评分：所有指标组的权重和为100。 例如：一组权重只能100，两个组可以自由分配</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/18/34B1GvmF2Mh5Twe.png" alt="微信截图_20201218140331.png"></p>
+<h2 id="3-金丝雀流水线实践"><a href="#3-金丝雀流水线实践" class="headerlink" title="3. 金丝雀流水线实践"></a>3. 金丝雀流水线实践</h2><h3 id="实验-3-1-流水线设计"><a href="#实验-3-1-流水线设计" class="headerlink" title="实验-3.1 流水线设计"></a>实验-3.1 流水线设计</h3><p><img src="https://i.loli.net/2020/12/18/uvt2ynfYDawkC4p.png" alt="微信截图_20201218140921.png"></p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 实验镜像</span><br><span class="line">registry.cn-beijing.aliyuncs.com/spinnaker-demo/spinnaker-nginx-demo:RELEASE-10.1.1</span><br><span class="line">registry.cn-beijing.aliyuncs.com/spinnaker-demo/spinnaker-nginx-demo:RELEASE-11.1.1</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="实验-3-2-流水线实现-部署1-0版本"><a href="#实验-3-2-流水线实现-部署1-0版本" class="headerlink" title="实验-3.2 流水线实现-部署1.0版本"></a>实验-3.2 流水线实现-部署1.0版本</h3><ul>
+<li>部署文件参考： 01-init.yaml</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/18/xLUO2PGAFeZEwyg.png" alt="微信截图_20201218141115.png"></p>
+<h3 id="实验-3-3-流水线实现-FindArtifacts-获取镜像"><a href="#实验-3-3-流水线实现-FindArtifacts-获取镜像" class="headerlink" title="实验-3.3 流水线实现-FindArtifacts 获取镜像"></a>实验-3.3 流水线实现-FindArtifacts 获取镜像</h3><p><img src="https://i.loli.net/2020/12/18/IgHvUzXnWDyosTN.png" alt="微信截图_20201218141216.png"></p>
+<h3 id="实验-3-4-流水线实现-部署1-0版本副本-baseline阶段"><a href="#实验-3-4-流水线实现-部署1-0版本副本-baseline阶段" class="headerlink" title="实验-3.4 流水线实现-部署1.0版本副本-baseline阶段"></a>实验-3.4 流水线实现-部署1.0版本副本-baseline阶段</h3><ul>
+<li>该阶段部署一个与当前1.0版本的副本。</li>
+<li>采用上个步骤获取的镜像。</li>
+<li>部署文件参考： 02-baseline.yaml</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/18/pEa6F5U7RAgunPB.png" alt="微信截图_20201218141318.png"></p>
+<h3 id="实验-3-5-流水线实现-部署2-0版本-Canary阶段"><a href="#实验-3-5-流水线实现-部署2-0版本-Canary阶段" class="headerlink" title="实验-3.5 流水线实现-部署2.0版本-Canary阶段"></a>实验-3.5 流水线实现-部署2.0版本-Canary阶段</h3><ul>
+<li>部署新版本v2,0，使用新的镜像。</li>
+<li>该镜像是由Jenkins构建触发的。</li>
+<li>部署文件参考： 03-canary.yaml</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/18/h3C5ZEQYSDo6FVJ.png" alt="微信截图_20201218141827.png"></p>
+<h3 id="实验-3-6-1-流水线实现-金丝雀分析阶段"><a href="#实验-3-6-1-流水线实现-金丝雀分析阶段" class="headerlink" title="实验-3.6.1 流水线实现-金丝雀分析阶段"></a>实验-3.6.1 流水线实现-金丝雀分析阶段</h3><ul>
+<li>Analysis Type: 分析类型，Real Time 实时分析（当前阶段开始），Retrospective 指定分析时间段。</li>
+<li>ConfigName: 指定金丝雀配置文件的名称。 Lifetime: 指定分析数据的总运行时间。</li>
+<li>Delay： 延迟时间，多少分钟后开始运行分析。 Interval: 间隔时间。 Step: 时间序列的间隔。  </li>
+<li>Baseline Offset ：从金丝雀分析开始以来基线数据收集的分钟数偏移。对于比较相对标准前的指标很有用。</li>
+<li>LookBackType：分析类型。  </li>
+<li>Growing在分析过程中将考虑金丝雀的整个持续时间。</li>
+<li>Sliding金丝雀将为其分析报告使用最新的指定分钟数（对于跨多天的长时间运行的金丝雀很有用）。</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/18/FVdXS4yfhLgAEm1.png" alt="微信截图_20201218141936.png"></p>
+<h3 id="实验-3-6-2-流水线实现-金丝雀分析阶段"><a href="#实验-3-6-2-流水线实现-金丝雀分析阶段" class="headerlink" title="实验-3.6.2 流水线实现-金丝雀分析阶段"></a>实验-3.6.2 流水线实现-金丝雀分析阶段</h3><ul>
+<li>填写基线版本和金丝雀版本的名称和所在的名称空间。</li>
+<li>在配置金丝雀配置文件的时候添加的过滤模板中使用的scope参数对应的是Baseline和Canary的名称。</li>
+<li>设置分数范围：得分小于50失败，大于等于80通过。</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/18/pYrCRGfAleJukyz.png" alt="微信截图_20201218144032.png"></p>
+<h3 id="实验-3-7-流水线实现-发布生产"><a href="#实验-3-7-流水线实现-发布生产" class="headerlink" title="实验-3.7 流水线实现-发布生产"></a>实验-3.7 流水线实现-发布生产</h3><ul>
+<li>部署文件参考： 04-prod.yaml</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/18/cd1IoanHTWi9ePF.png" alt="微信截图_20201218144241.png"></p>
+<h3 id="实验-3-8-流水线实现-清理基线版本和金丝雀版本"><a href="#实验-3-8-流水线实现-清理基线版本和金丝雀版本" class="headerlink" title="实验-3.8 流水线实现-清理基线版本和金丝雀版本"></a>实验-3.8 流水线实现-清理基线版本和金丝雀版本</h3><p><img src="https://i.loli.net/2020/12/18/Huxsj3heS9kPIn4.png" alt="微信截图_20201218144322.png"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Lustudio</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2020/12/18/Kubernetes%E6%B5%81%E6%B0%B4%E7%BA%BF%E9%83%A8%E7%BD%B2%E5%AE%9E%E8%B7%B5/">http://example.com/2020/12/18/Kubernetes%E6%B5%81%E6%B0%B4%E7%BA%BF%E9%83%A8%E7%BD%B2%E5%AE%9E%E8%B7%B5/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">Lustudio</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Spinnaker/">Spinnaker</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/12/18/Spinnaker%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2-%E7%A6%BB%E7%BA%BF%E7%89%88%E6%9C%AC/"><img class="prev-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">7.Spinnaker生产环境部署-离线版本</div></div></a></div><div class="next-post pull-right"><a href="/2020/12/18/Spinnaker%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%AE%9E%E8%B7%B5-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E4%B8%8E%E9%85%8D%E7%BD%AE/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">5.Spinnaker流水线实践-基础概念与配置</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2020/12/18/Spinnaker流水线实践-基础概念与配置/" title="5.Spinnaker流水线实践-基础概念与配置"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-18</div><div class="title">5.Spinnaker流水线实践-基础概念与配置</div></div></a></div><div><a href="/2020/12/18/Spinnaker授权管理/" title="4.Spinnaker授权管理"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-18</div><div class="title">4.Spinnaker授权管理</div></div></a></div><div><a href="/2020/12/18/Spinnaker用户认证管理/" title="3.Spinnaker用户认证管理"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-18</div><div class="title">3.Spinnaker用户认证管理</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%8F%82%E6%95%B0%E8%AF%9DMainfest"><span class="toc-number">1.</span> <span class="toc-text">1. 参数话Mainfest</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%8F%91%E5%B8%83Helm-Charts"><span class="toc-number">2.</span> <span class="toc-text">2. 发布Helm Charts</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E9%85%8D%E7%BD%AE%E5%BA%94%E7%94%A8%E5%9B%9E%E6%BB%9A"><span class="toc-number">3.</span> <span class="toc-text">3. 配置应用回滚</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B5%81%E6%B0%B4%E7%BA%BF%E8%BF%9B%E9%98%B6%E9%83%A8%E5%88%86"><span class="toc-number"></span> <span class="toc-text">流水线进阶部分</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E7%AE%A1%E9%81%93%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="toc-number">1.</span> <span class="toc-text">1. 管道表达式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-number">1.1.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%A1%E9%81%93%E5%B7%A5%E5%85%B7-Functions-%E5%87%BD%E6%95%B0"><span class="toc-number">1.2.</span> <span class="toc-text">管道工具-Functions - 函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%A1%E9%81%93%E5%B7%A5%E5%85%B7-Properrties-%E5%B1%9E%E6%80%A7"><span class="toc-number">1.3.</span> <span class="toc-text">管道工具-Properrties-属性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%A1%E9%81%93%E5%B7%A5%E5%85%B7-Property-file-%E5%B1%9E%E6%80%A7%E6%96%87%E4%BB%B6"><span class="toc-number">1.4.</span> <span class="toc-text">管道工具-Property file-属性文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%81%E6%B0%B4%E7%BA%BF%E6%95%B0%E6%8D%AE"><span class="toc-number">1.5.</span> <span class="toc-text">流水线数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="toc-number">1.6.</span> <span class="toc-text">测试表达式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%AD%E6%B3%95%EF%BC%9A-%E8%B0%83%E7%94%A8Java%E6%96%B9%E6%B3%95"><span class="toc-number">1.7.</span> <span class="toc-text">语法： 调用Java方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%AD%E6%B3%95%EF%BC%9A-Comparisons-%E6%AF%94%E8%BE%83"><span class="toc-number">1.8.</span> <span class="toc-text">语法： Comparisons 比较</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%AD%E6%B3%95%EF%BC%9A-Functions-%E6%96%B9%E6%B3%95"><span class="toc-number">1.9.</span> <span class="toc-text">语法： Functions 方法</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E8%93%9D%E7%BB%BF%E9%83%A8%E7%BD%B2"><span class="toc-number"></span> <span class="toc-text">2. 蓝绿部署</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Spinnaker%E8%93%9D%E7%BB%BF%E9%83%A8%E7%BD%B2"><span class="toc-number">1.</span> <span class="toc-text">Spinnaker蓝绿部署</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C-1-%E5%88%9B%E5%BB%BALB%EF%BC%88Service%EF%BC%89"><span class="toc-number">1.1.</span> <span class="toc-text">实验-1.创建LB（Service）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C-2-%E5%88%9B%E5%BB%BADeploy%EF%BC%88manifest%EF%BC%89"><span class="toc-number">1.2.</span> <span class="toc-text">实验-2.创建Deploy（manifest）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C-3-%E8%AE%BE%E7%BD%AERollout-Strategy"><span class="toc-number">1.3.</span> <span class="toc-text">实验-3.设置Rollout Strategy</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C-4-%E6%89%8B%E5%8A%A8%E8%BF%90%E8%A1%8C%E6%B5%81%E6%B0%B4%E7%BA%BF"><span class="toc-number">1.4.</span> <span class="toc-text">实验-4.手动运行流水线</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C-5-%E6%95%88%E6%9E%9C"><span class="toc-number">1.5.</span> <span class="toc-text">实验-5.效果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C-FAQ-%E5%AD%98%E5%9C%A8%E5%A4%9A%E4%B8%AA%E5%8E%86%E5%8F%B2%E7%89%88%E6%9C%AC"><span class="toc-number">1.6.</span> <span class="toc-text">实验-FAQ-存在多个历史版本</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%87%91%E4%B8%9D%E9%9B%80%E9%83%A8%E7%BD%B2"><span class="toc-number"></span> <span class="toc-text">金丝雀部署</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E9%87%91%E4%B8%9D%E9%9B%80%E9%83%A8%E7%BD%B2"><span class="toc-number">1.</span> <span class="toc-text">什么是金丝雀部署</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%80%E5%90%AF%E9%87%91%E4%B8%9D%E9%9B%80%E6%94%AF%E6%8C%81"><span class="toc-number">2.</span> <span class="toc-text">开启金丝雀支持</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C-1-1%E5%BC%80%E5%90%AFCanary%E6%94%AF%E6%8C%81-%E9%85%8D%E7%BD%AE%E5%AD%98%E5%82%A8"><span class="toc-number">2.1.</span> <span class="toc-text">实验-1.1开启Canary支持-配置存储</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C-1-2-%E5%BC%80%E5%90%AFCanary%E6%94%AF%E6%8C%81-%E9%85%8D%E7%BD%AEPrometheus"><span class="toc-number">2.2.</span> <span class="toc-text">实验-1.2 开启Canary支持-配置Prometheus</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C-1-3-%E5%BA%94%E7%94%A8%E5%BC%80%E5%90%AF%E9%87%91%E4%B8%9D%E9%9B%80%E5%8A%9F%E8%83%BD"><span class="toc-number">2.3.</span> <span class="toc-text">实验-1.3 应用开启金丝雀功能</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E9%87%91%E4%B8%9D%E9%9B%80%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">3.</span> <span class="toc-text">创建金丝雀配置文件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C-2-1-%E9%87%91%E4%B8%9D%E9%9B%80%E9%85%8D%E7%BD%AE-%E5%88%9B%E5%BB%BA%E9%87%91%E4%B8%9D%E9%9B%80%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">3.1.</span> <span class="toc-text">实验-2.1 金丝雀配置-创建金丝雀配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C-2-2-1-%E9%87%91%E4%B8%9D%E9%9B%80%E9%85%8D%E7%BD%AE-%E6%B7%BB%E5%8A%A0%E6%8C%87%E6%A0%87"><span class="toc-number">3.2.</span> <span class="toc-text">实验-2.2.1 金丝雀配置-添加指标</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C-2-2-2-%E9%87%91%E4%B8%9D%E9%9B%80%E9%85%8D%E7%BD%AE-%E6%B7%BB%E5%8A%A0%E6%8C%87%E6%A0%87"><span class="toc-number">3.3.</span> <span class="toc-text">实验-2.2.2 金丝雀配置-添加指标</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C-2-3-%E9%87%91%E4%B8%9D%E9%9B%80%E9%85%8D%E7%BD%AE-%E5%88%9B%E5%BB%BA%E6%8C%87%E6%A0%87%E7%BB%84"><span class="toc-number">3.4.</span> <span class="toc-text">实验-2.3 金丝雀配置-创建指标组</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E9%87%91%E4%B8%9D%E9%9B%80%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%AE%9E%E8%B7%B5"><span class="toc-number">4.</span> <span class="toc-text">3. 金丝雀流水线实践</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C-3-1-%E6%B5%81%E6%B0%B4%E7%BA%BF%E8%AE%BE%E8%AE%A1"><span class="toc-number">4.1.</span> <span class="toc-text">实验-3.1 流水线设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C-3-2-%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%AE%9E%E7%8E%B0-%E9%83%A8%E7%BD%B21-0%E7%89%88%E6%9C%AC"><span class="toc-number">4.2.</span> <span class="toc-text">实验-3.2 流水线实现-部署1.0版本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C-3-3-%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%AE%9E%E7%8E%B0-FindArtifacts-%E8%8E%B7%E5%8F%96%E9%95%9C%E5%83%8F"><span class="toc-number">4.3.</span> <span class="toc-text">实验-3.3 流水线实现-FindArtifacts 获取镜像</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C-3-4-%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%AE%9E%E7%8E%B0-%E9%83%A8%E7%BD%B21-0%E7%89%88%E6%9C%AC%E5%89%AF%E6%9C%AC-baseline%E9%98%B6%E6%AE%B5"><span class="toc-number">4.4.</span> <span class="toc-text">实验-3.4 流水线实现-部署1.0版本副本-baseline阶段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C-3-5-%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%AE%9E%E7%8E%B0-%E9%83%A8%E7%BD%B22-0%E7%89%88%E6%9C%AC-Canary%E9%98%B6%E6%AE%B5"><span class="toc-number">4.5.</span> <span class="toc-text">实验-3.5 流水线实现-部署2.0版本-Canary阶段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C-3-6-1-%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%AE%9E%E7%8E%B0-%E9%87%91%E4%B8%9D%E9%9B%80%E5%88%86%E6%9E%90%E9%98%B6%E6%AE%B5"><span class="toc-number">4.6.</span> <span class="toc-text">实验-3.6.1 流水线实现-金丝雀分析阶段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C-3-6-2-%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%AE%9E%E7%8E%B0-%E9%87%91%E4%B8%9D%E9%9B%80%E5%88%86%E6%9E%90%E9%98%B6%E6%AE%B5"><span class="toc-number">4.7.</span> <span class="toc-text">实验-3.6.2 流水线实现-金丝雀分析阶段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C-3-7-%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%AE%9E%E7%8E%B0-%E5%8F%91%E5%B8%83%E7%94%9F%E4%BA%A7"><span class="toc-number">4.8.</span> <span class="toc-text">实验-3.7 流水线实现-发布生产</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C-3-8-%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%AE%9E%E7%8E%B0-%E6%B8%85%E7%90%86%E5%9F%BA%E7%BA%BF%E7%89%88%E6%9C%AC%E5%92%8C%E9%87%91%E4%B8%9D%E9%9B%80%E7%89%88%E6%9C%AC"><span class="toc-number">4.9.</span> <span class="toc-text">实验-3.8 流水线实现-清理基线版本和金丝雀版本</span></a></li></ol></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021  <i id="heartbeat" class="fa fas fa-heartbeat"></i> Lustudio</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, welcome to my <a target="_blank" rel="noopener" href="https://butterfly.js.org/">blog</a>!</div></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/HCLonely/images@master/others/heartbeat.min.css"></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font-plus" type="button" title="放大字体"><i class="fas fa-plus"></i></button><button id="font-minus" type="button" title="缩小字体"><i class="fas fa-minus"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',preloader.endLoading())</script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
